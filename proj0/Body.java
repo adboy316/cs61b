@@ -32,8 +32,8 @@ Calculates the distance(r) between this.body and body(Body b)
 */	
 public double calcDistance(Body b) {
 
-	double dx = calcdx(this.xxPos, b.xxPos);
-	double dy = calcdy(this.yyPos, b.yyPos);
+	double dx = Math.pow(calcdx(this.xxPos, b.xxPos), 2);
+	double dy = Math.pow(calcdy(this.yyPos, b.yyPos), 2);
 	double r = Math.sqrt(dx+dy);
 	return r;
 }
@@ -56,7 +56,9 @@ Calculates force exerted in the X direction
 public double calcForceExertedByX (Body b) {
 
 	double f = calcForceExertedBy(b);
-	double dx = Math.sqrt(calcdx(this.xxPos, b.xxPos));
+	
+	
+	double dx = calcdx(this.xxPos, b.xxPos);
 	double r = calcDistance(b);
 	double fx = ((f * dx )/r);	
 	return fx;
@@ -69,7 +71,8 @@ Calculates force exerted in the Y direction
 public double calcForceExertedByY (Body b) {
 
 	double f = calcForceExertedBy(b);
-	double dy = Math.sqrt(calcdy(this.yyPos, b.yyPos));
+	
+	double dy = calcdy(this.yyPos, b.yyPos);
 	double r = calcDistance(b);
 	double fy = (f * dy)/r;
 	return fy;
@@ -115,14 +118,19 @@ public void update (double dt, double xForce, double yForce) {
 	this.yyPos = this.yyPos + dt * this.yyVel;
 }
 
-
+/**
+Draw the Body’s image at the Body’s position
+*/
+public void draw() {
+	StdDraw.picture(this.xxPos, this.yyPos, "images/" + this.imgFileName);
+}
 
 // Helper Methods
 /**
  Calculates dx
 */
 public double calcdx (double xposB1, double xposB2 ) {
-	double dx = Math.pow((xposB2 - xposB1), 2);
+	double dx = xposB2 - xposB1;
 	return dx;
 }
 
@@ -130,7 +138,7 @@ public double calcdx (double xposB1, double xposB2 ) {
 Calculates dy
 */
 public double calcdy (double yposB1, double yposB2 ) {
-	double dy = Math.pow((yposB2 - yposB1), 2);
+	double dy = yposB2 - yposB1 ;
 	return dy;
 }
 
