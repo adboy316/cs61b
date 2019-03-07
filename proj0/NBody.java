@@ -36,7 +36,7 @@ public class NBody {
 
 	
 	/** Create universe Animation. */
-	for (double t = 0; t != T; t++) {
+	for (double t = 0; t < T; t = t+dt) {
 
 		/* Create an xForces array and yForces array. */
 		double[] xForces = new double[bodies.length];
@@ -64,28 +64,21 @@ public class NBody {
 		/* Shows the drawing to the screen, and waits 2000 milliseconds. */
 		StdDraw.show();
 		StdDraw.pause(10);
-		T = T+dt;
-
-		// /** Check that loop is working*/
-		// for (int i = 0; i<bodies.length; i++) {
-		// System.out.println(xForces[i]);
-		// System.out.println(yForces[i]);
-		// }
-	
+		
 	}
 
+	/* Prints the universe when simulation is over. */
 	StdOut.printf("%d\n", bodies.length);
 	StdOut.printf("%.2e\n", radius);
 	for (int i = 0; i < bodies.length; i++) {
     	StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
-                  bodies[i].xxPos, bodies[i].yyPos, bodies[i].xxVel,
-                  bodies[i].yyVel, bodies[i].mass, bodies[i].imgFileName);   
-}
+              bodies[i].xxPos, bodies[i].yyPos, bodies[i].xxVel,
+              bodies[i].yyVel, bodies[i].mass, bodies[i].imgFileName);  
+ 
+	}
 
 
 }
-
-
 
 /**
 Return the radius of the universe contained in file
