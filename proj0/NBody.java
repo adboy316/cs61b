@@ -66,11 +66,11 @@ public class NBody {
 		StdDraw.pause(10);
 		T = T+dt;
 
-		/** Check that loop is working*/
-		for (int i = 0; i<bodies.length; i++) {
-		System.out.println(xForces[i]);
-		System.out.println(yForces[i]);
-		}
+		// /** Check that loop is working*/
+		// for (int i = 0; i<bodies.length; i++) {
+		// System.out.println(xForces[i]);
+		// System.out.println(yForces[i]);
+		// }
 	
 	}
 
@@ -102,13 +102,15 @@ Return an array of Bodys corresponding to the bodies in the file
 */
 public static Body[] readBodies(String file) {
 	In in = new In(file);
-	Body[] bodies = new Body[5];
+	int size = in.readInt();
 	in.readLine();
 	in.readLine();
-	for (int i=0; i<5; i++) {
-		bodies[i] = new Body(in.readDouble(), in.readDouble(), in.readDouble(), 
-			in.readDouble(), in.readDouble(), in.readString());
-	}
+	Body[] bodies = new Body[size];
+	for (int i=0; i<bodies.length; i++) {
+	 	bodies[i] = new Body(in.readDouble(), in.readDouble(), in.readDouble(), 
+	 		in.readDouble(), in.readDouble(), in.readString());
+	 }
+	
 	return bodies;
 }	
 
