@@ -82,13 +82,15 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         if (A.rest == null) {
-            A.rest = B;
-            return A;
+            return A.rest = B;
+        }
+        else if (A == null) {
+            return A = B;
         }
 
-//     A.first = A.first;
-       dcatenate(A.rest, B);
-       return A;
+        dcatenate(A.rest, B);
+        return A;
+
     }
 
     /**
@@ -96,10 +98,7 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        //TODO:  fill in method
-        // We want to get to get to the end of List A
-        // After we want to insert list B in the null pointer of A
-        // Then we create a new list to insert the results
+
         if (A == null) {
            return B;
         }
