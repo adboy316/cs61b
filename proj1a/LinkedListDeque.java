@@ -1,12 +1,12 @@
 /** LinkedListDeque is a double ended queue */
-public class LinkedListDeque<type> {
+public class LinkedListDeque<T> {
 
     private class Node {
         public Node prev;
-        public type item;
+        public T item;
         public Node next;
 
-        public Node (Node p, type i, Node n) {
+        public Node (Node p, T i, Node n) {
             prev = p;
             item = i;
             next = n;
@@ -20,14 +20,14 @@ public class LinkedListDeque<type> {
 
     /** Creates an empty LinkedListDeque */
     public LinkedListDeque() {
-        sentinel = new Node(null, (type) "??", null);
+        sentinel = new Node(null, (T) "??", null);
         size = 0;
     }
 
     /** Creates a non-empty LinkedListDeque */
-    public LinkedListDeque(type x) {
+    public LinkedListDeque(T x) {
 
-        sentinel = new Node(null, (type) "??", null);
+        sentinel = new Node(null, (T) "??", null);
 
         Node newNode = new Node(null, x, null);
         newNode.next = newNode;
@@ -41,25 +41,25 @@ public class LinkedListDeque<type> {
 
     /** Creates a deep copy of other */
     public LinkedListDeque(LinkedListDeque other) {
-        sentinel = new Node(null, (type) "??", null);
+        sentinel = new Node(null, (T) "??", null);
         size = 0;
         for (int i = 0; i < other.size(); i++) {
-            addLast((type) other.get(i));
+            addLast((T) other.get(i));
         }
     }
 
     /** Returns the first element of the list */
-     public type getFirst() {return sentinel.next.item;}
+     public T getFirst() {return sentinel.next.item;}
      public Node getLast() {return end;}
 
-     public type getSecond() {return sentinel.next.next.item;}
-     public type getThird() {return sentinel.next.next.next.item;}
-     public type getFourth() {return sentinel.next.next.next.next.item;}
+     public T getSecond() {return sentinel.next.next.item;}
+     public T getThird() {return sentinel.next.next.next.item;}
+     public T getFourth() {return sentinel.next.next.next.next.item;}
 
 
 
-    /** Adds an item of type x to the front of the deque. */
-    public void addFirst(type x) {
+    /** Adds an item of T x to the front of the deque. */
+    public void addFirst(T x) {
 
         Node newNode = new Node(null, x, null);
 
@@ -80,8 +80,8 @@ public class LinkedListDeque<type> {
 
     }
 
-    /** Adds an item of type x to the back of the deque. */
-    public void addLast(type x) {
+    /** Adds an item of T x to the back of the deque. */
+    public void addLast(T x) {
 
         Node newNode = new Node (null, x, null);
         if (start == null) {
@@ -135,9 +135,9 @@ public class LinkedListDeque<type> {
 
     /** Removes and returns the item at the front of the deque.
      * If no such item exists, returns null. */
-    public type removeFirst() {
+    public T removeFirst() {
         if (this.size != 0) {
-            type first = start.item;
+            T first = start.item;
             if (this.size == 1) {
                 sentinel.next = null;
                 sentinel.prev = null;
@@ -160,9 +160,9 @@ public class LinkedListDeque<type> {
 
     /** Removes and returns the item at the back of the deque.
      * If no such item exists, returns null. */
-    public type removeLast() {
+    public T removeLast() {
         if (this.size != 0) {
-            type last = end.item;
+            T last = end.item;
             if (this.size == 1) {
                 sentinel.next = null;
                 sentinel.prev = null;
@@ -182,7 +182,7 @@ public class LinkedListDeque<type> {
 
     /** Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth.
      * If no such item exists, returns null. Must not alter the deque! */
-    public type get(int index) {
+    public T get(int index) {
 
         Node counter = start;
         for (int i = 0; i < index; i++) {
@@ -198,7 +198,7 @@ public class LinkedListDeque<type> {
 
     /** Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth.
      * If no such item exists, returns null. Must not alter the deque! RECURSIVE*/
-    public type getRecursive (int index) {
+    public T getRecursive (int index) {
 
         if (index >= size) {
             return null;
@@ -208,7 +208,7 @@ public class LinkedListDeque<type> {
 
     }
     /** Helper method for getRecursive(int index) that uses a node */
-    public type getRecursive (int index, Node s) {
+    public T getRecursive (int index, Node s) {
 
         if (index == 0) {
             return s.item;
