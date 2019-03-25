@@ -8,11 +8,11 @@
 
 import static java.lang.StrictMath.floorMod;
 
-public class ArrayDeque <Item> {
+public class ArrayDeque <T> {
 
 
-    private Item[] items;
-    public int size;
+    private T[] items;
+    private int size;
     private int nextFirst;
     private int nextLast;
 
@@ -20,17 +20,17 @@ public class ArrayDeque <Item> {
     private int capacity;
 
      //getters
-    public Item[] getItems() {return items;}
+    public T[] getItems() {return items;}
     public int size() {return size;}
     public int getNextFirst() {return nextFirst;}
     public int getNextLast() {return nextLast;}
-    public Item getFirstItem() {return items[floorMod(nextFirst -1,  capacity)];}
-    public Item getLastItem() {return items[floorMod(nextLast + 1,  capacity)];}
+    public T getFirstItem() {return items[floorMod(nextFirst -1,  capacity)];}
+    public T getLastItem() {return items[floorMod(nextLast + 1,  capacity)];}
 
 
 
     public ArrayDeque () {
-        items = (Item[]) new Object[defaultSize];
+        items = (T[]) new Object[defaultSize];
         nextFirst = 1;
         nextLast = 0;
         size = 0;
@@ -42,13 +42,13 @@ public class ArrayDeque <Item> {
         nextLast = 0;
         size = 0;
         capacity = defaultSize;
-        items = (Item[]) new Object[defaultSize];
+        items = (T[]) new Object[defaultSize];
         for (int i = 0; i < other.size(); i++) {
-            addLast((Item) other.get(i));
+            addLast((T) other.get(i));
         }
     }
 
-    public void addFirst (Item x) {
+    public void addFirst (T x) {
         if (size == capacity) {
             resize();
         }
@@ -62,7 +62,7 @@ public class ArrayDeque <Item> {
     }
 
 
-    public void addLast(Item x){
+    public void addLast(T x){
         if (size == capacity) {
             resize();
         }
@@ -75,23 +75,23 @@ public class ArrayDeque <Item> {
         size ++;
     }
 
-    public Item removeFirst(){
+    public T removeFirst(){
         if (nextFirst == 0) {
             nextFirst = capacity ;
         }
-        Item x = items[nextFirst-1];
+        T x = items[nextFirst-1];
         items[nextFirst-1] = null;
         nextFirst = floorMod((nextFirst - 1),  capacity);
         size --;
         return x;
     }
 
-    public Item removeLast(){
+    public T removeLast(){
         if (nextLast == capacity -1) {
             nextLast = -1 ;
         }
 
-        Item x = items[nextLast + 1];
+        T x = items[nextLast + 1];
         items[nextLast + 1] = null;
         nextLast = floorMod((nextLast + 1),  capacity);
         size--;
@@ -133,7 +133,7 @@ public class ArrayDeque <Item> {
 
     }
 
-    public Item get(int index){
+    public T get(int index){
         if (index > size-1 || index < 0) {
             return null;
         }
@@ -145,7 +145,7 @@ public class ArrayDeque <Item> {
         int lastLenght = items.length;
         int firstItem = lastLenght - lastItem;
         capacity = lastLenght * 2;
-        Item[] a = (Item[]) new Object[capacity];
+        T[] a = (T[]) new Object[capacity];
         System.arraycopy(items, lastItem, a, 0, firstItem);
         System.arraycopy(items, 0, a, firstItem, lastItem);
         items = a;
