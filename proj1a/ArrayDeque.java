@@ -76,6 +76,7 @@ public class ArrayDeque <T> {
     }
 
     public T removeFirst(){
+        T x = items[nextFirst-1];
         checkUsageRatio();
         if (size == 0) {
             return null;
@@ -83,7 +84,6 @@ public class ArrayDeque <T> {
         if (nextFirst == 0) {
             nextFirst = capacity ;
         }
-        T x = items[nextFirst-1];
         items[nextFirst-1] = null;
         nextFirst = floorMod((nextFirst - 1),  capacity);
         size --;
@@ -91,6 +91,7 @@ public class ArrayDeque <T> {
     }
 
     public T removeLast(){
+        T x = items[nextLast + 1];
         checkUsageRatio();
         if (size == 0) {
             return null;
@@ -98,8 +99,6 @@ public class ArrayDeque <T> {
         if (nextLast == capacity -1) {
             nextLast = -1 ;
         }
-
-        T x = items[nextLast + 1];
         items[nextLast + 1] = null;
         nextLast = floorMod((nextLast + 1),  capacity);
         size--;
@@ -195,24 +194,71 @@ public class ArrayDeque <T> {
     public static void main(String[] args) {
 
         ArrayDeque L = new ArrayDeque<String>();
-        L.removeLast();
-        System.out.println(L.size);
         L.addFirst("a");
-        System.out.println(L.get(0));
         L.addFirst("b");
-        System.out.println(L.get(0));
-        System.out.println(L.get(1));
-        L.addLast("c");
-        L.addLast("d");
-        L.addLast("e");
-        L.addFirst("j");
+        L.addFirst("c");
+        L.addFirst("d");
+        L.addFirst("e");
+        L.addFirst("f");
+        L.addFirst("g");
+        L.addFirst("a");
+        L.addFirst("b");
+        L.addFirst("c");
+        L.addFirst("d");
+        L.addFirst("e");
+        L.addFirst("f");
+        L.addFirst("g");
+
         L.printDeque();
         System.out.println(L.removeFirst());
         System.out.println(L.removeFirst());
         System.out.println(L.removeFirst());
-        L.printDeque();
-        L.addLast("f");
         System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        L.printDeque();
+
+        L.addFirst("a");
+        L.addFirst("b");
+        L.addFirst("c");
+        L.addFirst("d");
+        L.addFirst("e");
+        L.addFirst("f");
+        L.addFirst("g");
+        L.addFirst("a");
+        L.addFirst("b");
+        L.addFirst("c");
+        L.addFirst("d");
+        L.addFirst("e");
+        L.addFirst("f");
+        L.addFirst("g");
+        L.printDeque();
+
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+        System.out.println(L.removeFirst());
+
+        L.printDeque();
+
         L.addLast("g");
         L.addLast("h");
         L.addFirst("j");
