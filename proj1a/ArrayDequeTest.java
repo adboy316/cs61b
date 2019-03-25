@@ -23,7 +23,7 @@ public class ArrayDequeTest {
         assertEquals(null, testArray.getItems()[0]);
         assertEquals(testArray.getNextFirst(), 1);
         assertEquals(testArray.getNextLast(), 0);
-        assertEquals(testArray.getSize(), 0);
+        assertEquals(testArray.size(), 0);
     }
 
 

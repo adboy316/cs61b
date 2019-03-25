@@ -21,7 +21,7 @@ public class ArrayDeque <Item> {
 
      //getters
     public Item[] getItems() {return items;}
-    public int getSize() {return size;}
+    public int size() {return size;}
     public int getNextFirst() {return nextFirst;}
     public int getNextLast() {return nextLast;}
     public Item getFirstItem() {return items[floorMod(nextFirst -1,  capacity)];}
@@ -43,7 +43,7 @@ public class ArrayDeque <Item> {
         size = 0;
         capacity = defaultSize;
         items = (Item[]) new Object[defaultSize];
-        for (int i = 0; i < other.getSize(); i++) {
+        for (int i = 0; i < other.size(); i++) {
             addLast((Item) other.get(i));
         }
     }
