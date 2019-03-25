@@ -137,7 +137,14 @@ public class ArrayDeque <T> {
         if (index > size-1 || index < 0) {
             return null;
         }
-        return items[floorMod(nextLast - index, size)];
+        int counter = nextFirst;
+        int finalIndex = 0;
+        for (int i = -1; i < index; i++){
+
+            counter--;
+            finalIndex = floorMod(counter, capacity);
+        }
+        return items[finalIndex];
     }
 
     private void resize() {
@@ -158,8 +165,11 @@ public class ArrayDeque <T> {
     public static void main(String[] args) {
 
         ArrayDeque L = new ArrayDeque<String>();
-        L.addLast("a");
-        L.addLast("b");
+        L.addFirst("a");
+        System.out.println(L.get(0));
+        L.addFirst("b");
+        System.out.println(L.get(0));
+        System.out.println(L.get(1));
         L.addLast("c");
         L.addLast("d");
         L.addLast("e");
