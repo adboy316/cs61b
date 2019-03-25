@@ -12,7 +12,7 @@ public class ArrayDeque <Item> {
 
 
     private Item[] items;
-    private int size;
+    public int size;
     private int nextFirst;
     private int nextLast;
 
@@ -265,6 +265,8 @@ public class ArrayDeque <Item> {
         L3.addFirst("first");
         L2.printDeque();
         L3.printDeque();
+
+        System.out.println(L2.size);
 
 
     }
