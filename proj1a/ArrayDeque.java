@@ -76,32 +76,35 @@ public class ArrayDeque <T> {
     }
 
     public T removeFirst(){
-        T x = items[nextFirst-1];
-        checkUsageRatio();
+
         if (size == 0) {
             return null;
         }
         if (nextFirst == 0) {
             nextFirst = capacity ;
         }
+        T x = items[nextFirst-1];
         items[nextFirst-1] = null;
         nextFirst = floorMod((nextFirst - 1),  capacity);
         size --;
+        checkUsageRatio();
         return x;
     }
 
     public T removeLast(){
-        T x = items[nextLast + 1];
-        checkUsageRatio();
+
         if (size == 0) {
             return null;
         }
         if (nextLast == capacity -1) {
             nextLast = -1 ;
         }
+
+        T x = items[nextLast + 1];
         items[nextLast + 1] = null;
         nextLast = floorMod((nextLast + 1),  capacity);
         size--;
+        checkUsageRatio();
         return x;
     }
 
@@ -183,7 +186,7 @@ public class ArrayDeque <T> {
         int firstItem = floorMod(nextFirst - 1, capacity);
         capacity = lastLenght/2;
         T[] a = (T[]) new Object[capacity];
-        System.arraycopy(items, lastItem, a, 0, firstItem);
+        System.arraycopy(items, lastItem, a, 0, firstItem+1);
         items = a;
         nextLast = capacity-1;
         nextFirst = size;
