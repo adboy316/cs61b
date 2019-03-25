@@ -76,6 +76,7 @@ public class ArrayDeque <T> {
     }
 
     public T removeFirst(){
+        checkUsageRatio();
         if (size == 0) {
             return null;
         }
@@ -90,7 +91,7 @@ public class ArrayDeque <T> {
     }
 
     public T removeLast(){
-
+        checkUsageRatio();
         if (size == 0) {
             return null;
         }
@@ -103,6 +104,15 @@ public class ArrayDeque <T> {
         nextLast = floorMod((nextLast + 1),  capacity);
         size--;
         return x;
+    }
+
+    private void checkUsageRatio() {
+        if (size > 2) {
+            double R = (double) size / (double) capacity;
+            if (R < .25) {
+                downSize();
+            }
+        }
     }
 
 
@@ -165,6 +175,19 @@ public class ArrayDeque <T> {
         items = a;
         nextLast = capacity-1;
         nextFirst = lastLenght;
+    }
+
+
+    private void downSize() {
+        int lastItem = floorMod(nextLast + 1, capacity);
+        int lastLenght = items.length;
+        int firstItem = floorMod(nextFirst - 1, capacity);
+        capacity = lastLenght/2;
+        T[] a = (T[]) new Object[capacity];
+        System.arraycopy(items, lastItem, a, 0, firstItem);
+        items = a;
+        nextLast = capacity-1;
+        nextFirst = size;
     }
 
 
@@ -267,6 +290,12 @@ public class ArrayDeque <T> {
         L2.printDeque();
         L2.removeFirst();
         L2.removeFirst();
+        L2.removeLast();
+        L2.removeLast();
+        L2.removeFirst();
+        L2.removeFirst();
+        L2.removeLast();
+        L2.removeLast();
         L2.removeLast();
         L2.removeLast();
         L2.printDeque();
