@@ -139,6 +139,7 @@ public class LinkedListDeque<T> {
         if (this.size != 0) {
             T first = start.item;
             start.item = null;
+
             if (this.size == 1) {
                 sentinel.next = null;
                 sentinel.prev = null;
@@ -147,9 +148,18 @@ public class LinkedListDeque<T> {
                 size = 0;
                 return first;
             }
+
+
+
             sentinel.next = start.next;
-            start.next.prev = sentinel.next;
+            start.next.prev = end;
+            end.next = start.next;
+
             start = start.next;
+
+
+
+
             size -= 1;
             return first;
 
