@@ -138,6 +138,7 @@ public class LinkedListDeque<T> {
     public T removeFirst() {
         if (this.size != 0) {
             T first = start.item;
+            start.item = null;
             if (this.size == 1) {
                 sentinel.next = null;
                 sentinel.prev = null;
@@ -163,6 +164,7 @@ public class LinkedListDeque<T> {
     public T removeLast() {
         if (this.size != 0) {
             T last = end.item;
+            end.item = null;
             if (this.size == 1) {
                 sentinel.next = null;
                 sentinel.prev = null;
