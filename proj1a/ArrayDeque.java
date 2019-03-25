@@ -76,6 +76,9 @@ public class ArrayDeque <T> {
     }
 
     public T removeFirst(){
+        if (size == 0) {
+            return null;
+        }
         if (nextFirst == 0) {
             nextFirst = capacity ;
         }
@@ -87,6 +90,10 @@ public class ArrayDeque <T> {
     }
 
     public T removeLast(){
+
+        if (size == 0) {
+            return null;
+        }
         if (nextLast == capacity -1) {
             nextLast = -1 ;
         }
@@ -165,6 +172,8 @@ public class ArrayDeque <T> {
     public static void main(String[] args) {
 
         ArrayDeque L = new ArrayDeque<String>();
+        L.removeLast();
+        System.out.println(L.size);
         L.addFirst("a");
         System.out.println(L.get(0));
         L.addFirst("b");
