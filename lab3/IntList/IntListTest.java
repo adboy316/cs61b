@@ -1,6 +1,7 @@
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+
+import static org.junit.Assert.*;
 
 public class IntListTest {
 
@@ -63,7 +64,25 @@ public class IntListTest {
         IntList B = IntList.of(4, 5, 6);
         IntList exp = IntList.of(1, 2, 3, 4, 5, 6);
         assertEquals(exp, IntList.catenate(A, B));
+
         assertEquals(IntList.of(1, 2, 3), A);
+    }
+
+    @Test
+    public void testReverse() {
+
+        //The function returns a reversed list.
+        IntList A = IntList.of(1, 2, 3, 4);
+        IntList expected = IntList.of(4, 3, 2, 1);
+        A = IntList.reverse(A);
+        assertEquals(expected, A);
+
+
+        //The method handles a null input properly.
+        IntList B = IntList.of();
+        IntList.reverse(B);
+        assertEquals(B, null);
+
     }
 
     /** If you're running this from the command line, you'll need
