@@ -39,7 +39,7 @@ public class Palindrome {
     public boolean isPalindrome(String word, CharacterComparator cc) {
         Deque wordDeque = wordToDequeBackwards(word);
         for (int i = 0; i < word.length(); i++) {
-            if (word.length() % 2 != 0 && i % word.length() == i) {
+            if (word.length() % 2 != 0 && i  == word.length()/2) {
                 continue;
             }
             char wordLetter = word.toCharArray()[i];
