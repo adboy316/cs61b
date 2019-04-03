@@ -55,8 +55,8 @@ public abstract class Creature extends Occupant {
         return energy;
     }
 
-    /**
-     * Sets energy of Creature to x
-     */
-    public void setEnergy(Double x){energy = x;}
+//    /**
+//     * Sets energy of Creature to x
+//     */
+//    public void setEnergy(Double x){energy = x;}
 }

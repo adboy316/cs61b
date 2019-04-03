@@ -69,7 +69,6 @@ public class Clorus extends Creature {
     public void attack(Creature c) {
         Double creatureEnergy = c.energy();
         this.energy += creatureEnergy;
-        c.setEnergy(0.0);
     }
 
     /**
@@ -122,6 +121,7 @@ public class Clorus extends Creature {
     public Color color() {
         return color(r, g, b);
     }
+
 
     /**
      *If any value in neighbor is not Impassible, return false, else return true
