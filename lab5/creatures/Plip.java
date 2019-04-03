@@ -1,14 +1,13 @@
 package creatures;
 
-import huglife.Creature;
-import huglife.Direction;
-import huglife.Action;
-import huglife.Occupant;
+import huglife.*;
 
 import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
+
+import static huglife.HugLifeUtils.randomEntry;
 
 /**
  * An implementation of a motile pacifist photosynthesizer.
@@ -16,7 +15,6 @@ import java.util.Map;
  * @author Josh Hug
  */
 public class Plip extends Creature {
-
     /**
      * red color.
      */
@@ -29,24 +27,47 @@ public class Plip extends Creature {
      * blue color.
      */
     private int b;
-
+    /**
+     * Energy lost with MOVE action.
+     */
+    private static final double moveEnergy = - 0.15;
+    /**
+     * Energy gained with STAY action.
+     */
+    private static final double stayEnergy = 0.2;
+    /**
+     * If plip energy is 0, green should be value 63.
+     */
+    private static final int greenColorEnergy = 63;
+    /**
+     * If this sees a neighbor with name() clorus, it will move to empty
+     * square with clorusMoveProbability
+     */
+    private double clorusMoveProbability = 0.5;
     /**
      * creates plip with energy equal to E.
      */
     public Plip(double e) {
         super("plip");
-        r = 0;
-        g = 0;
-        b = 0;
+        r = 99;
+        g = (96 * (int) e) + greenColorEnergy;
+        b = 76;
         energy = e;
     }
 
     /**
      * creates a plip with energy equal to 1.
      */
-    public Plip() {
-        this(1);
+    public Plip() { this(1);
     }
+
+    /**
+     * Sets energy of Plip to x
+     */
+    public void setEnergy(double x) {
+        this.energy = x;
+    }
+
 
     /**
      * Should return a color with red = 99, blue = 76, and green that varies
@@ -57,7 +78,9 @@ public class Plip extends Creature {
      * that you get this exactly correct.
      */
     public Color color() {
-        g = 63;
+
+
+        g = (int) (96 * energy) + greenColorEnergy;
         return color(r, g, b);
     }
 
@@ -74,7 +97,9 @@ public class Plip extends Creature {
      * private static final variable. This is not required for this lab.
      */
     public void move() {
-        // TODO
+        energy += moveEnergy;
+        checkMaxMinEnergy();
+        color();
     }
 
 
@@ -82,7 +107,9 @@ public class Plip extends Creature {
      * Plips gain 0.2 energy when staying due to photosynthesis.
      */
     public void stay() {
-        // TODO
+        energy += stayEnergy;
+        checkMaxMinEnergy();
+        color();
     }
 
     /**
@@ -91,7 +118,9 @@ public class Plip extends Creature {
      * Plip.
      */
     public Plip replicate() {
-        return this;
+        Plip newPlip = new Plip(energy * 0.5);
+        this.energy = energy * 0.5;
+        return newPlip;
     }
 
     /**
@@ -111,20 +140,68 @@ public class Plip extends Creature {
         // Rule 1
         Deque<Direction> emptyNeighbors = new ArrayDeque<>();
         boolean anyClorus = false;
-        // TODO
-        // (Google: Enhanced for-loop over keys of NEIGHBORS?)
-        // for () {...}
-
-        if (false) { // FIXME
-            // TODO
+        if(!adjacentSpacesAreEmpty(neighbors)){
+            return new Action(Action.ActionType.STAY);
         }
-
         // Rule 2
-        // HINT: randomEntry(emptyNeighbors)
-
+        if (this.energy >= 1) {
+            Direction availableSpace = findAvailableSpace(neighbors, emptyNeighbors);
+            return new Action(Action.ActionType.REPLICATE, availableSpace);
+        }
         // Rule 3
-
+            //Search occupants for name with clorus
+        for (Occupant creature: neighbors.values()) {
+            if (creature.name().equals("clorus" )) {
+                if (Math.random() < clorusMoveProbability) {
+                    Direction availableSpace = findAvailableSpace(neighbors, emptyNeighbors);
+                    return new Action(Action.ActionType.MOVE, availableSpace);
+                }
+            }
+        }
         // Rule 4
         return new Action(Action.ActionType.STAY);
     }
+
+    /**
+     *If energy is greater than 2, then set to 2 instead.
+     *If energy is less than 0, then set to 0 instead.
+     */
+    private void checkMaxMinEnergy() {
+        if (energy > 2){
+            energy = 2;
+        }
+        if (energy < 0){
+            energy = 0;
+        }
+    }
+
+    /**
+     *If any value in neighbor is not Impassible, return false, else return true
+     */
+    private boolean adjacentSpacesAreEmpty(Map<Direction, Occupant> neighbors){
+        for (Occupant creature: neighbors.values()){
+            if (creature.getClass().equals(Empty.class)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Search neighbor map for Empty spaces, and adds empty spaces to emptyNeighbors
+     * Return a random empty Direction
+     * INVARIANT: Assumes that there is at least one empty space in neighbors
+     */
+    private Direction findAvailableSpace(Map<Direction, Occupant> neighbors, Deque<Direction> emptyNeighbors) {
+        for (Map.Entry<Direction, Occupant> entry : neighbors.entrySet()) {
+            Direction key = entry.getKey();
+            Occupant value = entry.getValue();
+            if (value.getClass().equals(Empty.class)) {
+                emptyNeighbors.add(key);
+            }
+        }
+        return randomEntry(emptyNeighbors);
+    }
+
+
 }

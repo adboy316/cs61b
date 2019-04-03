@@ -1,8 +1,6 @@
 package huglife;
 
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.List;
 
 /**
  * @author Josh Hug
@@ -56,4 +54,9 @@ public abstract class Creature extends Occupant {
     public double energy() {
         return energy;
     }
+
+    /**
+     * Sets energy of Creature to x
+     */
+    public void setEnergy(Double x){energy = x;}
 }

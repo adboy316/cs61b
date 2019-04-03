@@ -1,16 +1,15 @@
 package creatures;
+import huglife.*;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.awt.*;
 import java.util.HashMap;
-import java.awt.Color;
-import huglife.Direction;
-import huglife.Action;
-import huglife.Occupant;
-import huglife.Impassible;
-import huglife.Empty;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /** Tests the plip class
- *  @authr FIXME
+ *  @authr Ariel Delgado
  */
 
 public class TestPlip {
@@ -18,24 +17,39 @@ public class TestPlip {
     @Test
     public void testBasics() {
         Plip p = new Plip(2);
+        assertEquals("plip", p.name());
         assertEquals(2, p.energy(), 0.01);
         assertEquals(new Color(99, 255, 76), p.color());
         p.move();
         assertEquals(1.85, p.energy(), 0.01);
+        assertEquals(240, p.color().getGreen(), 0.01);
         p.move();
         assertEquals(1.70, p.energy(), 0.01);
         p.stay();
         assertEquals(1.90, p.energy(), 0.01);
         p.stay();
         assertEquals(2.00, p.energy(), 0.01);
+        assertEquals(255, p.color().getGreen(), 0.01);
+        p.stay();
+        assertEquals(2.00, p.energy(), 0.01);
+        p.setEnergy(0);
+        p.move();
+        assertEquals(0, p.energy(), 0.01);
+        assertEquals(63, p.color().getGreen(), 0.01);
     }
 
     @Test
     public void testReplicate() {
-        // TODO
+        Plip p1 = new Plip(2);
+        double p1Energy = p1.energy();
+        double expectedP1andP2Energy = p1.energy() * 0.5;
+        Plip p2 = p1.replicate();
+        assertNotEquals(p1, p2);
+        assertEquals(expectedP1andP2Energy, p1.energy(), 0.1);
+        assertEquals(expectedP1andP2Energy, p2.energy(), 0.1);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
 
         // No empty adjacent spaces; stay.

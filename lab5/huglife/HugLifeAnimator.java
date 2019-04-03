@@ -37,7 +37,7 @@ public class HugLifeAnimator {
      *
      * @param outputName name of the file to store the final GIF to
      */
-    public static void init(String outputName) {
+    public static void init(final String outputName) {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
