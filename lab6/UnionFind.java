@@ -70,8 +70,8 @@ public class UnionFind {
 
         //  Link the root of the smaller tree to the larger tree.
         if (sizeOfV1 == sizeOfV2) {
-            parent[rootOfV2] = rootOfV1;
-            parent[rootOfV1] += sizeOfV2;
+            parent[rootOfV1] = rootOfV2;
+            parent[rootOfV2] += sizeOfV1;
 
         }
         // In this case < actually means a greater size
@@ -114,6 +114,7 @@ public class UnionFind {
         UnionFind u = new UnionFind(16);
 
         u.union(0, 1);
+        System.out.println(u.find(0));
         u.union(0, 10);
         u.union(0, 4);
         u.union(0, 15);
