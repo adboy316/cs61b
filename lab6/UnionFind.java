@@ -53,6 +53,10 @@ public class UnionFind {
        change the sets but may alter the internal structure of the data. */
     public void union(int v1, int v2) {
 
+        if (v1 > parent.length -1 || v2 > parent.length -1) {
+            throw new IllegalArgumentException("Index out of bound");
+        }
+
         // Find the root of both vertex
         int rootOfV1 = find(v1);
         int rootOfV2 = find(v2);
