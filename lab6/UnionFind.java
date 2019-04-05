@@ -72,11 +72,15 @@ public class UnionFind {
         if (sizeOfV1 == sizeOfV2) {
             parent[rootOfV2] = rootOfV1;
             parent[rootOfV1] += sizeOfV2;
+
         }
         // In this case < actually means a greater size
         else if (sizeOfV1 < sizeOfV2) {
+
             parent[rootOfV2] = rootOfV1;
             parent[rootOfV1] += sizeOfV2;
+
+
         }
         else {
             parent[rootOfV1] = rootOfV2;
@@ -109,7 +113,7 @@ public class UnionFind {
     public static void main(String[] args) {
         UnionFind u = new UnionFind(16);
 
-        u.union(0, 3);
+        u.union(0, 1);
         u.union(0, 10);
         u.union(0, 4);
         u.union(0, 15);
