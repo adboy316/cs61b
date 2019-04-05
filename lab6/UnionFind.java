@@ -24,8 +24,13 @@ public class UnionFind {
         }
     }
 
+    public int sizeOf(int v1){
+        int x = find(v1);
+        return parent[x] * -1;
+    }
+
     /* Returns the size of the set v1 belongs to. */
-    public int sizeOf(int v1) {
+    public int sizeOfNegative(int v1) {
         // Go to the root of v1... so find(v1),
         int x = find(v1);
         //  Return the contents of v1, which is the size of that tree
@@ -65,8 +70,8 @@ public class UnionFind {
         }
 
         // Record the size of the roots of v1 and v2
-        int sizeOfV1 = sizeOf(v1);
-        int sizeOfV2 = sizeOf(v2);
+        int sizeOfV1 = sizeOfNegative(v1);
+        int sizeOfV2 = sizeOfNegative(v2);
 
         //  Link the root of the smaller tree to the larger tree.
         if (sizeOfV1 == sizeOfV2) {
