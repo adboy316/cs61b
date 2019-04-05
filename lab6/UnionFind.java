@@ -89,6 +89,10 @@ public class UnionFind {
        allowing for fast search-time. */
     public int find(int vertex) {
 
+        if (vertex > parent.length -1) {
+            throw new IllegalArgumentException("Index out of bound");
+        }
+
         List<Integer> path = new ArrayList<>();
 
         while (parent[vertex] >= 0) {
