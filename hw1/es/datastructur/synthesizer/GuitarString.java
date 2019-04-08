@@ -16,6 +16,13 @@ public class GuitarString {
         //       cast the result of this division operation into an int. For
         //       better accuracy, use the Math.round() function before casting.
         //       Your buffer should be initially filled with zeros.
+
+        int capacity = (int) Math.round(SR/frequency);
+        buffer = new ArrayRingBuffer(capacity);
+
+        for (int i = 0; i < capacity; i++) {
+            buffer.enqueue(0.0);
+        }
     }
 
 
@@ -27,6 +34,15 @@ public class GuitarString {
         //
         //       Make sure that your random numbers are different from each
         //       other.
+
+        for (int i = 0; i < buffer.capacity(); i++) {
+            buffer.dequeue();
+        }
+
+        for (int i = 0; i < buffer.capacity(); i++) {
+            buffer.enqueue(Math.random() - 0.5);
+        }
+
     }
 
     /* Advance the simulation one time step by performing one iteration of
@@ -36,12 +52,29 @@ public class GuitarString {
         // TODO: Dequeue the front sample and enqueue a new sample that is
         //       the average of the two multiplied by the DECAY factor.
         //       Do not call StdAudio.play().
+
+
+
+//        for (int i = 0; i < buffer.capacity() ; i++) {
+//            buffer.enqueue(Math.random() - 0.5);
+//        }
+
+        // Remove the front double in the BoundedQueue and average it with the next double
+        // in the BoundedQueue (hint: use dequeue() and peek()) multiplied
+        // by an energy decay factor of 0.996 (we’ll call this entire quantity
+        // newDouble). Then, add newDouble to the BoundedQueue.
+
+        double frontDouble = buffer.dequeue();
+        double nextDouble = buffer.peek();
+        double newDouble = ((frontDouble + nextDouble) * 0.5) * DECAY;
+        buffer.enqueue(newDouble);
+
     }
 
     /* Return the double at the front of the buffer. */
     public double sample() {
         // TODO: Return the correct thing.
-        return 0;
+        return buffer.peek();
     }
 }
     // TODO: Remove all comments that say TODO when you're done.
