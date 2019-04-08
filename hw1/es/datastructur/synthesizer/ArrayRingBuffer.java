@@ -91,14 +91,15 @@ public class ArrayRingBuffer<T> implements BoundedQueue <T> {
         return rb[first];
     }
 
-    public T getLast(){
-        return rb[(last % rb.length) - 1];
-    }
-
-
-    public int getLastIndex(){
-        return last;
-    }
+    // Methods for testing
+//    public T getLast(){
+//        return rb[(last % rb.length) - 1];
+//    }
+//
+//
+//    public int getLastIndex(){
+//        return last;
+//    }
 
 
     @Override

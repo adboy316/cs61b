@@ -23,16 +23,16 @@ public class TestArrayRingBuffer {
         assertEquals(1, arb.fillCount());
         assertEquals(10, arb.capacity());
         assertEquals(1, arb.peek());
-        assertEquals(1, arb.getLastIndex());
-        assertEquals(1, arb.getLast());
+//        assertEquals(1, arb.getLastIndex());
+//        assertEquals(1, arb.getLast());
 
         arb.enqueue(2);
         arb.enqueue(4);
         assertEquals(3, arb.fillCount());
         assertEquals(10, arb.capacity());
         assertEquals(1, arb.peek());
-        assertEquals(3, arb.getLastIndex());
-        assertEquals(4, arb.getLast());
+//        assertEquals(3, arb.getLastIndex());
+//        assertEquals(4, arb.getLast());
 
 
     }
@@ -49,15 +49,15 @@ public class TestArrayRingBuffer {
         assertEquals(2, arb.fillCount());
         assertEquals(10, arb.capacity());
         assertEquals(2, arb.peek());
-        assertEquals(3, arb.getLastIndex());
-        assertEquals(4, arb.getLast());
+//        assertEquals(3, arb.getLastIndex());
+//        assertEquals(4, arb.getLast());
 
         arb.dequeue();
         assertEquals(1, arb.fillCount());
         assertEquals(10, arb.capacity());
         assertEquals(4, arb.peek());
-        assertEquals(3, arb.getLastIndex());
-        assertEquals(4, arb.getLast());
+//        assertEquals(3, arb.getLastIndex());
+//        assertEquals(4, arb.getLast());
     }
 
 
@@ -79,8 +79,8 @@ public class TestArrayRingBuffer {
         assertEquals(4, arb.fillCount());
         assertEquals(5, arb.capacity());
         assertEquals(1, arb.peek());
-        assertEquals(3, arb.getLastIndex());
-        assertEquals(1, arb.getLast());
+     //    assertEquals(3, arb.getLastIndex());
+     //   assertEquals(1, arb.getLast());
     }
 
     @Test
@@ -102,8 +102,8 @@ public class TestArrayRingBuffer {
         assertEquals(1, arb.fillCount());
         assertEquals(5, arb.capacity());
         assertEquals(2, arb.peek());
-        assertEquals(2, arb.getLastIndex());
-        assertEquals(2, arb.getLast());
+      //  assertEquals(2, arb.getLastIndex());
+      //  assertEquals(2, arb.getLast());
     }
 
     @Test(expected = IllegalArgumentException.class)
