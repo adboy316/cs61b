@@ -1,51 +1,86 @@
-public class UnionFind {
+public class UnionFind  {
 
-    // TODO - Add instance variables?
 
-    /* Creates a UnionFind data structure holding n vertices. Initially, all
-       vertices are in disjoint sets. */
-    public UnionFind(int n) {
-        // TODO
+        private int[] parent;
+        private int[] size;
+        private int count;
+
+        public UnionFind(int n) {
+            this.count = n;
+            this.parent = new int[n];
+            this.size = new int[n];
+
+            for (int i = 0; i < n; ++i) {
+                this.parent[i] = i;
+                this.size[i] = 1;
+            }
+
+        }
+
+        public int count() {
+            return this.count;
+        }
+
+        public int find(int p) {
+            this.validate(p);
+
+            while (p != this.parent[p]) {
+                p = this.parent[p];
+            }
+
+            return p;
+        }
+
+        private void validate(int p) {
+            int n = this.parent.length;
+            if (p < 0 || p >= n) {
+                throw new IllegalArgumentException("index " + p + " is not between 0 and " + (n - 1));
+            }
+        }
+
+        public boolean connected(int p, int q) {
+            return this.find(p) == this.find(q);
+        }
+
+        public void union(int p, int q) {
+            int rootP = this.find(p);
+            int rootQ = this.find(q);
+            if (rootP != rootQ) {
+                int[] var10000;
+                if (this.size[rootP] < this.size[rootQ]) {
+                    this.parent[rootP] = rootQ;
+                    var10000 = this.size;
+                    var10000[rootQ] += this.size[rootP];
+                } else {
+                    this.parent[rootQ] = rootP;
+                    var10000 = this.size;
+                    var10000[rootP] += this.size[rootQ];
+                }
+
+                --this.count;
+            }
+        }
+
+        public int size(int v1){
+            int x = find(v1);
+
+            if (size[x] == 1) {
+                return 0;
+            }
+
+            return size[x];
+        }
+
+
+
+    public static void main(String[] args) {
+
+        UnionFind test = new UnionFind(10);
+        test.union(0, 1);
+        test.union(0, 2);
+
+        System.out.println(test.size(2));
+
+
     }
-
-    /* Throws an exception if v1 is not a valid index. */
-    private void validate(int vertex) {
-        // TODO
-    }
-
-    /* Returns the size of the set v1 belongs to. */
-    public int sizeOf(int v1) {
-        // TODO
-        return -1;
-    }
-
-    /* Returns the parent of v1. If v1 is the root of a tree, returns the
-       negative size of the tree for which v1 is the root. */
-    public int parent(int v1) {
-        // TODO
-        return -1;
-    }
-
-    /* Returns true if nodes v1 and v2 are connected. */
-    public boolean connected(int v1, int v2) {
-        // TODO
-        return false;
-    }
-
-    /* Connects two elements v1 and v2 together. v1 and v2 can be any valid 
-       elements, and a union-by-size heuristic is used. If the sizes of the sets
-       are equal, tie break by connecting v1's root to v2's root. Unioning a 
-       vertex with itself or vertices that are already connected should not 
-       change the sets but may alter the internal structure of the data. */
-    public void union(int v1, int v2) {
-        // TODO
-    }
-
-    /* Returns the root of the set V belongs to. Path-compression is employed
-       allowing for fast search-time. */
-    public int find(int vertex) {
-        // TODO
-        return -1;
-    }
-
 }
