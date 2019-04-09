@@ -28,13 +28,12 @@ public class BubbleGridTest {
 
     @Test
     public void testDisconnectedDrop () {
-        int[][] grid = {{1, 1, 0},
-                {1, 1, 0},
-                {1, 0, 0},
-                {1, 1, 1}};
+        int[][] grid = {{0, 1, 0},
+                        {1, 1, 1},
+                        {1, 0, 0}};
 
-        int[][] darts = {{1, 1}};
-        int[] expected = {2};
+        int[][] darts = {{1, 3}};
+        int[] expected = {0};
         validate(grid, darts, expected);
     }
 
@@ -53,6 +52,7 @@ public class BubbleGridTest {
         assertTrue(expectedConnections.connected(0, 3));
         assertTrue(expectedConnections.connected(0, 6));
         assertTrue(expectedConnections.connected(0, 9));
+        assertTrue(expectedConnections.connected(1, 4));
         assertTrue(expectedConnections.connected(1, 4));
         assertFalse(expectedConnections.connected(4, 7));
         assertFalse(expectedConnections.connected(4, 10));

@@ -23,11 +23,17 @@ public class    BubbleGrid {
      * and have no side-effects to grid. */
     public int[] popBubbles(int[][] darts) {
 
+
+        // We need to find connectity for a specific position in our grid (dart)
+        // So find the bubbles that are connected to the darts
+
+
         UnionFind stuckBubbles = findStuckBubbles();
         int [] dartPositions = translateDartPositions(darts);
         int [] fallenBubbles = new int[dartPositions.length];
 
         for (int i = 0; i < fallenBubbles.length; i++) {
+
 
            fallenBubbles[i] = stuckBubbles.size(dartPositions[i]);
         }
