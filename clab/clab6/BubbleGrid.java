@@ -47,7 +47,7 @@ public class    BubbleGrid {
     }
 
     /* Returns all the connected bubbles.*/
-    private UnionFind findStuckBubbles() {
+    public UnionFind findStuckBubbles() {
 
         UnionFind connections  = new UnionFind(gridSize);
 
@@ -55,7 +55,9 @@ public class    BubbleGrid {
             for (int j = 1; j < rows; j++) {
                 if (grid[0][i] == 1  && grid[0][i] == grid[j][i]){
                     connections.union(i, (j * columns) + i );
-                }
+                } else { break; }
+
+
             }
         }
         return connections;

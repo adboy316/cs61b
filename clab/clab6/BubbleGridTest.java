@@ -26,6 +26,38 @@ public class BubbleGridTest {
         validate(grid, darts, expected);
     }
 
+    @Test
+    public void testDisconnectedDrop () {
+        int[][] grid = {{1, 1, 0},
+                {1, 1, 0},
+                {1, 0, 0},
+                {1, 1, 1}};
+
+        int[][] darts = {{1, 1}};
+        int[] expected = {2};
+        validate(grid, darts, expected);
+    }
+
+    @Test
+    public void testFindStuckBubbles () {
+        int[][] grid = {{1, 1, 0},
+                       {1, 1, 0},
+                       {1, 0, 0},
+                       {1, 1, 1}};
+        BubbleGrid sol = new BubbleGrid(grid);
+        UnionFind expectedConnections = new UnionFind(grid.length * grid[0].length);
+
+        assertEquals(12, expectedConnections.count());
+        expectedConnections = sol.findStuckBubbles();
+
+        assertTrue(expectedConnections.connected(0, 3));
+        assertTrue(expectedConnections.connected(0, 6));
+        assertTrue(expectedConnections.connected(0, 9));
+        assertTrue(expectedConnections.connected(1, 4));
+        assertFalse(expectedConnections.connected(4, 7));
+        assertFalse(expectedConnections.connected(4, 10));
+
+    }
 
 
     @Test
