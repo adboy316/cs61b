@@ -68,7 +68,7 @@ public class UnionFind  {
                 return 0;
             }
 
-            return size[x] -1 ;
+            return size[x];
         }
 
 
