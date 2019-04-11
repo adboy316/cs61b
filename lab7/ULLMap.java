@@ -5,7 +5,7 @@ import java.util.Set;
  *  Any key must appear at most once in the dictionary, but values may appear multiple
  *  times. Key operations are get(key), put(key, value), and contains(key) methods. The value
  *  associated to a key is the value in the last call to put with that key. */
-public class ULLMap<K, V>  implements Map61B<K, V> {
+public class ULLMap<K, V> implements Map61B<K, V> {
     int size = 0;
 
     /** Returns the value corresponding to KEY or null if no such value exists. */
@@ -68,7 +68,7 @@ public class ULLMap<K, V>  implements Map61B<K, V> {
 
     /** Represents one node in the linked list that stores the key-value pairs
      *  in the dictionary. */
-    private class Entry {
+    private class   Entry {
 
         /** Stores KEY as the key in this key-value pair, VAL as the value, and
          *  NEXT as the next node in the linked list. */
