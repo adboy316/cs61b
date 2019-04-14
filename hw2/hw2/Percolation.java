@@ -5,15 +5,22 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 
     private Tile[][] grid;
-    private int openSites;
     private int N;
+    private int topSite;
+    private int bottomSite;
+    private int virtualTopSite;
+    private WeightedQuickUnionUF connections;
+    private WeightedQuickUnionUF virtualConnections;
 
-    WeightedQuickUnionUF connections;
 
     /**
      * Create N-by-N grid, with all sites initially blocked
      */
     public Percolation(int N) {
+
+        if (N < 0)throw new IllegalArgumentException("N must be greater than 0.");
+
+
         this.N = N;
         int position = 0;
         this. grid = new Tile[N][N];
@@ -23,8 +30,14 @@ public class Percolation {
                 position += 1;
             }
         }
-
-        connections = new WeightedQuickUnionUF(gridSize());
+        connections = new WeightedQuickUnionUF(gridSize() + 2);
+        virtualConnections = new WeightedQuickUnionUF(gridSize()+1);
+        this.topSite = gridSize() ;
+        this.bottomSite = gridSize() + 1;
+        this.virtualTopSite = gridSize();
+        connectTopSite(topSite);
+        connectBottomSite(bottomSite);
+        connectTopVirtualSite(virtualTopSite);
     }
 
     /**
@@ -32,39 +45,126 @@ public class Percolation {
      */
     public void open(int row, int col) {
 
-        grid[row][col].open = true;
-        if (grid[row][col].pos < N) { // If tile is in row 0, set to full
-            grid[row][col].full = true;
-        }
-        openSites += 1;
-        int[] neighborhs = checkNeighbors(row, col);
+        if (row > N || col > N) throw new IndexOutOfBoundsException();
 
-        // Connects open tiles
+        grid[row][col].open = true;
+        int[] neighborhs = checkNeighbors(row, col);
+        connectOpenTiles(row, col, neighborhs);
+        checkFull(grid[row][col]);
+    }
+
+    /**
+     * Is the site (row, col) open?
+     */
+    public boolean isOpen(int row, int col) {
+        if (row > N || col > N) throw new IndexOutOfBoundsException();
+        return grid[row][col].open;
+    }
+
+    /**
+     * Is the site (row, col) full?
+     */
+    public boolean isFull(int row, int col) {
+        if (row > N || col > N) throw new IndexOutOfBoundsException();
+        return grid[row][col].full;
+    }
+
+    /**
+     * Number of open sites
+     */
+    public int numberOfOpenSites() {
+        int openSites = 0;
+        for (int i = 0; i < N*N; i++) {
+            if (grid[i/N][i%N].open){
+                openSites++;
+            }
+        }
+        return openSites;
+    }
+
+    /**
+     * Does the system percolate?
+     */
+    public boolean percolates()  {
+        return connections.connected(topSite, bottomSite);
+    }
+
+    /**
+     * Connect top row to topSite.
+     */
+    private void connectTopSite(int topSite) {
+        for (int i = 0; i < N; i++) {
+            connections.union(topSite, i);
+            grid[i/N][i%N].root = topSite;
+        }
+    }
+
+    private void connectTopVirtualSite(int topVirtualSite) {
+        for (int i = 0; i < N; i++) {
+            virtualConnections.union(topSite, i);
+            grid[i/N][i%N].root = topSite;
+        }
+    }
+
+
+    /**
+     * Connect bottom row to bottomSite.
+     */
+    private void connectBottomSite(int bottomSite) {
+        int startOfLastRow = (N * N) - N;
+        for (int i = startOfLastRow; i < (N*N) ; i++) {
+            if (i == gridSize()){
+                continue;
+            }
+            connections.union(i, bottomSite);
+            grid[i/N][i%N].root = bottomSite;
+        }
+    }
+
+    /**
+     * Connects neighboring open tiles.
+     */
+    private void connectOpenTiles(int row, int col, int[] neighborhs) {
         for (int n : neighborhs) {
             if (grid[n / N][n % N].open) {
                 connections.union(n, grid[row][col].pos);
+                virtualConnections.union(n, grid[row][col].pos);
+
             }
         }
-
-        // Sets open tiles to full if they contain a root as an open tile
-        // Find root
-       if (isConnectedToTopRow(grid[row][col])){
-           for (int i = 0; i < N*N; i++) {
-               if (connections.connected(grid[row][col].pos, i)) {
-                   grid[i/N][i%N].full = true;
-               }
-           }
-       }
-
     }
 
-    private boolean isConnectedToTopRow(Tile tile) {
-        for (int i = 0; i < N ; i++) {
-            if (connections.connected(tile.pos, i)) {
-                return true;
+    /**
+     * Sets open tiles to full if they contain a topsite as an open tile and they are open
+     */
+    private void checkFull(Tile tile) {
+
+        // Base case
+        if (tile.full){
+            return;
+        }
+
+        if (tile.root == topSite){
+            tile.full = true;
+        }
+
+        if (isConnectedToTopSite(tile) && tile.open){
+           tile.full = true;
+           tile.root = topSite;
+           int[] neighborhs = checkNeighbors(tile.pos / N, tile.pos % N);
+            for (int x : neighborhs) {
+                if (isConnectedToTopSite(grid[x/N][x%N]) && grid[x/N][x%N].open){
+                    checkFull(grid[x/N][x%N]);
+                }
             }
         }
-        return false;
+}
+
+    /**
+     * Check if tile is connected to the topsite?
+     */
+    private boolean isConnectedToTopSite(Tile tile) {
+        return virtualConnections.connected(tile.pos,virtualTopSite);
     }
 
     /**
@@ -113,52 +213,15 @@ public class Percolation {
         }
     }
 
-    /**
-     * Is the site (row, col) open?
-     */
-    public boolean isOpen(int row, int col) {
-        return grid[row][col].open;
-    }
-
-    /**
-     * Is the site (row, col) full?
-     */
-    public boolean isFull(int row, int col) {
-        return grid[row][col].full;
-    }
-
-    /**
-     * Number of open sites
-     */
-    public int numberOfOpenSites() {
-        return openSites;
-    }
-
-    /**
-     * Does the system percolate?
-     */
-    public boolean percolates()  {
-        // if any of the bottom slides connect to the top row, return true
-        int startOfLastRow = (N * N) - N;
-        for (int i = startOfLastRow; i < N*N ; i++) {
-            if (isConnectedToTopRow(grid[i/N][i%N])) {
-                return true;
-            }
-        }
-
-        return false;
+    // Helper methods for testing
+    public int gridSize() {
+        return grid.length * grid[0].length;
     }
 
     /**
      * Use for unit testing (not required, but keep this here for the autograder)
      */
     public static void main(String[] args) {
-    }
-
-
-    // Helper methods for testing
-    public int gridSize() {
-        return grid.length * grid[0].length;
     }
 
 }
