@@ -150,7 +150,7 @@ public class Percolation {
     private void checkFull(Tile tile) {
 
         // Base case
-        if (tile.full){
+        if (tile.full || !tile.open){
             return;
         }
 
