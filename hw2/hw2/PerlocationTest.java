@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class PerlocationTest {
 
@@ -15,10 +14,6 @@ public class PerlocationTest {
         test = new Percolation(5);
     }
 
-    @Test
-    public void perlocationConstructor() {
-        assertEquals(25, test.gridSize());
-    }
 
     @Test
     public void testOpen () {

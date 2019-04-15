@@ -13,7 +13,7 @@ public class PercolationStats {
 
     // perform T independent experiments on an N-by-N grid
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if(N < 0 || T < 0) throw new IllegalArgumentException();
+        if(N <= 0 || T <= 0) throw new IllegalArgumentException();
 
         this.N = N;
         this.totalSites = N*N;
@@ -35,12 +35,12 @@ public class PercolationStats {
     // low endpoint of 95% confidence interval
     public double confidenceLow(){
 
-        return StdStats.min(getFractions());
+        return mean() - stddev();
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHigh() {
-        return StdStats.max(getFractions());
+        return mean() + stddev();
     }
 
     // Returns a list of xT Perlocation fractions.

@@ -6,6 +6,7 @@ public class Percolation {
 
     private Tile[][] grid;
     private int N;
+    private int openSites;
     private int topSite;
     private int bottomSite;
     private int virtualTopSite;
@@ -18,8 +19,7 @@ public class Percolation {
      */
     public Percolation(int N) {
 
-        if (N < 0)throw new IllegalArgumentException("N must be greater than 0.");
-
+        if (N <= 0)throw new IllegalArgumentException("N must be greater than 0.");
 
         this.N = N;
         int position = 0;
@@ -35,6 +35,7 @@ public class Percolation {
         this.topSite = gridSize() ;
         this.bottomSite = gridSize() + 1;
         this.virtualTopSite = gridSize();
+        this.openSites = 0;
         connectTopSite(topSite);
         connectBottomSite(bottomSite);
         connectTopVirtualSite(virtualTopSite);
@@ -44,13 +45,21 @@ public class Percolation {
      * Open the site (row, col) if it is not open already
      */
     public void open(int row, int col) {
-
         if (row > N || col > N) throw new IndexOutOfBoundsException();
+
+        if (grid[row][col].open) return;
+
+        if (N == 1){
+            grid[row][col].open = true;
+            grid[row][col].full = true;
+            return;
+        }
 
         grid[row][col].open = true;
         int[] neighborhs = checkNeighbors(row, col);
         connectOpenTiles(row, col, neighborhs);
         checkFull(grid[row][col]);
+        openSites += 1;
     }
 
     /**
@@ -73,12 +82,6 @@ public class Percolation {
      * Number of open sites
      */
     public int numberOfOpenSites() {
-        int openSites = 0;
-        for (int i = 0; i < N*N; i++) {
-            if (grid[i/N][i%N].open){
-                openSites++;
-            }
-        }
         return openSites;
     }
 
@@ -214,7 +217,7 @@ public class Percolation {
     }
 
     // Helper methods for testing
-    public int gridSize() {
+    private int gridSize() {
         return grid.length * grid[0].length;
     }
 
