@@ -52,6 +52,7 @@ public class Percolation {
         if (N == 1){
             grid[row][col].open = true;
             grid[row][col].full = true;
+            openSites = 1;
             return;
         }
 
@@ -89,6 +90,12 @@ public class Percolation {
      * Does the system percolate?
      */
     public boolean percolates()  {
+
+        if (N == 1) {
+            if (numberOfOpenSites() == 1) return true;
+            else return false;
+        }
+
         return connections.connected(topSite, bottomSite);
     }
 
@@ -156,8 +163,10 @@ public class Percolation {
            tile.root = topSite;
            int[] neighborhs = checkNeighbors(tile.pos / N, tile.pos % N);
             for (int x : neighborhs) {
-                if (isConnectedToTopSite(grid[x/N][x%N]) && grid[x/N][x%N].open){
-                    checkFull(grid[x/N][x%N]);
+                if (grid[x/N][x%N].open) {
+                    if (isConnectedToTopSite(grid[x / N][x % N])) {
+                        checkFull(grid[x / N][x % N]);
+                    }
                 }
             }
         }
