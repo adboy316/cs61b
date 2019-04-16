@@ -3,10 +3,7 @@ package hw3.hash;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class TestSimpleOomage {
@@ -22,6 +19,32 @@ public class TestSimpleOomage {
 
     @Test
     public void testHashCodePerfect() {
+        SimpleOomage s;
+        int red, green, blue;
+        int duplicates;
+        int counter =0;
+        List<Integer> hashCodes = new ArrayList<>();
+
+        for (red = 0; red <= 255; red += 5) {
+            for (green = 0; green <= 255; green += 5) {
+                for (blue = 0; blue <= 255; blue += 5) {
+                    s =  new SimpleOomage(red, green, blue);
+                    hashCodes.add(s.hashCode());
+                    counter++;
+
+                }
+            }
+        }
+
+        Set<Integer> set = new HashSet<Integer>(hashCodes);
+
+        int listSize = hashCodes.size();
+        int setSize = set.size();
+        duplicates = listSize - setSize;
+
+        assertEquals(0, duplicates);
+
+
         /* TODO: Write a test that ensures the hashCode is perfect,
           meaning no two SimpleOomages should EVER have the same
           hashCode UNLESS they have the same red, blue, and green values!
@@ -39,7 +62,7 @@ public class TestSimpleOomage {
         assertNotEquals(ooA, "ketchup");
     }
 
-    /*
+
     @Test
     public void testHashCodeAndEqualsConsistency() {
         SimpleOomage ooA = new SimpleOomage(5, 10, 20);
@@ -47,10 +70,10 @@ public class TestSimpleOomage {
         HashSet<SimpleOomage> hashSet = new HashSet<>();
         hashSet.add(ooA);
         assertTrue(hashSet.contains(ooA2));
-    }*/
+    }
 
     /* TODO: Uncomment this test after you finish haveNiceHashCodeSpread in OomageTestUtility */
-    /*@Test
+    @Test
     public void testRandomOomagesHashCodeSpread() {
         List<Oomage> oomages = new ArrayList<>();
         int N = 10000;
@@ -60,7 +83,7 @@ public class TestSimpleOomage {
         }
 
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(oomages, 10));
-    }*/
+    }
 
     /** Calls tests for SimpleOomage. */
     public static void main(String[] args) {
