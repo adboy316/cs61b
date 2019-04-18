@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -155,7 +156,21 @@ public class ULLMap<K, V>  implements Map61B<K, V> {
 
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> set = new HashSet<>();
+        Iterator t = iterator();
+        while (t.hasNext()){
+            set.add((K) t.next());
+        }
+        return set;
+    }
+
+    public static void main(String[] args) {
+        ULLMap<Integer, String> test = new ULLMap<>();
+
+        test.put(2, "blue");
+        test.put(1, "blue");
+        test.put(4, "blue");
+        System.out.println(test.keySet().toString());
     }
 
 }
