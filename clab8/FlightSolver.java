@@ -31,13 +31,15 @@ public class FlightSolver {
             fq.add(f);
         }
 
-        for (Flight f: flights) {
-            arrivalsDepartures.add(fq.poll());
-            checkFlightOverlap(arrivalsDepartures, f);
+        while (!fq.isEmpty()) {
+            Flight currentFlight = fq.poll();
+            arrivalsDepartures.add(currentFlight);
+            checkFlightOverlap(arrivalsDepartures, currentFlight);
             currentPassengerCounter = calculatePassengerCount(arrivalsDepartures);
             if (currentPassengerCounter > maxPassengerCounter) {
                 maxPassengerCounter = currentPassengerCounter;
             }
+
         }
         return maxPassengerCounter;
     }
