@@ -48,8 +48,8 @@ public class FlightSolverTest {
      */
     @Test
     public void mediumTest() {
-        int[] startTimes = {15, 23, 18, 42, 55, 75, 78};
-        int[] endTimes = {27, 45, 44, 65, 90, 95, 85};
+        int[] startTimes =      {15, 23, 18, 42, 55, 75, 78};
+        int[] endTimes =        {27, 45, 44, 65, 90, 95, 85};
         int[] passengerCounts = {20, 30, 10, 25, 5, 10, 15};
         FlightSolver solver = new FlightSolver(makeFlights(startTimes, endTimes, passengerCounts));
         assertEquals(65, solver.solve());
