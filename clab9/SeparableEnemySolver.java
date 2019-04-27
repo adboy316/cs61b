@@ -23,9 +23,52 @@ public class SeparableEnemySolver {
      * Returns true if input is separable, false otherwise.
      */
     public boolean isSeparable() {
-        // TODO: Fix me
+
+        ArrayList<Integer> degrees = new ArrayList();
+        Set<Integer> degreesSet = new HashSet<>();
+
+        for (String node: g.labels()){
+            degrees.add(g.neighbors(node).size());
+            degreesSet.add(g.neighbors(node).size());
+        }
+
+        if (degreesSet.size() == 1) {
+            return true;
+        }
+
+        int numberOfOddDegrees = 0;
+        int numberOfEvenDegrees = 0;
+        for (Integer n: degrees) {
+
+            if (n % 2 > 0){
+                numberOfOddDegrees += 1;
+            } else {
+                numberOfEvenDegrees += 1;
+            }
+        }
+
+        if (numberOfOddDegrees == 2 && numberOfEvenDegrees > 2 && isConnected(g.labels().iterator().next()) ) {
+            return true;
+        }
         return false;
     }
+
+
+
+    Set<String> aleadyVisited = new HashSet<>();
+    int counter = 0;
+    public boolean isConnected(String s) {
+       aleadyVisited.add(s);
+        counter += 1;
+
+       for (String n: g.neighbors(s)) {
+           if (!aleadyVisited.contains(n)) {
+               isConnected(n);
+           }
+       }
+        return counter >= g.labels().size();
+    }
+
 
 
     /* HELPERS FOR READING IN CSV FILES. */
