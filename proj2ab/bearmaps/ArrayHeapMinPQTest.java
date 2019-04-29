@@ -3,8 +3,6 @@ package bearmaps;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Random;
-
 import static org.junit.Assert.*;
 
 
@@ -16,7 +14,7 @@ public class ArrayHeapMinPQTest {
     @Before
     public void setUp () {
         testPQ  = new ArrayHeapMinPQ<>(10);
-        testPQLarge  = new ArrayHeapMinPQ<>();
+        testPQLarge  = new ArrayHeapMinPQ<>(10);
         testNaivePQ = new NaiveMinPQ<>();
 
 
@@ -76,7 +74,7 @@ public class ArrayHeapMinPQTest {
     @Test
     public void setTestPQLarge() {
         for (int i = 0; i < 20000; i++ ) {
-            testPQLarge.add(i, new Random().nextInt(100));
+            testPQLarge.add(i, i);
         }
     }
 

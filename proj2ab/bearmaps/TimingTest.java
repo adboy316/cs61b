@@ -13,7 +13,7 @@ public class TimingTest {
 
         System.out.println("Conducting add() test......");
         Stopwatch sw = new Stopwatch();
-        for (int i = 0; i < 20000; i++ ) {
+        for (int i = 0; i < 2000000; i++ ) {
             testPQLarge.add(i, i);
         }
         System.out.println("Total time elapsed: " + sw.elapsedTime() +  " seconds.");
@@ -29,7 +29,7 @@ public class TimingTest {
 
         System.out.println("Conducting contain() test......");
         Stopwatch sw3 = new Stopwatch();
-        for (int i = 0; i < 20000; i++ ) {
+        for (int i = 0; i < 200000; i++ ) {
             testPQLarge.contains(new Random().nextInt(21000));
         }
         System.out.println("Total time elapsed: " + sw3.elapsedTime() +  " seconds.");
