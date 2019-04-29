@@ -18,7 +18,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     }
 
     public ArrayHeapMinPQ() {
-        this(1);
+        this(2);
     }
 
     /**
@@ -143,7 +143,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
      * */
     private void resize (int capacity) {
         assert capacity > n;
-        PriorityNode[] temp = (PriorityNode[]) new Object[capacity];
+        PriorityNode[] temp = new PriorityNode[capacity];
         for (int i = 1; i <= n; i++) {
             temp[i] = pq[i];
         }

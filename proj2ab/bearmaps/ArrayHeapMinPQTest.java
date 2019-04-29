@@ -8,11 +8,16 @@ import static org.junit.Assert.*;
 
 public class ArrayHeapMinPQTest {
     ArrayHeapMinPQ<String> testPQ;
-
+    ArrayHeapMinPQ<Integer> testPQLarge;
+    NaiveMinPQ<Integer> testNaivePQ;
 
     @Before
     public void setUp () {
         testPQ  = new ArrayHeapMinPQ<>(10);
+        testPQLarge  = new ArrayHeapMinPQ<>();
+        testNaivePQ = new NaiveMinPQ<>();
+
+
     }
 
     @Test
@@ -64,6 +69,20 @@ public class ArrayHeapMinPQTest {
         assertEquals("B", testPQ.getSmallest());
         testPQ.changePriority("A", 2.0);
         assertEquals("A", testPQ.getSmallest());
+    }
+
+    @Test
+    public void setTestPQLarge() {
+        for (int i = 0; i < 20000; i++ ) {
+            testPQLarge.add(i, i);
+        }
+    }
+
+    @Test
+    public void setTestNaivePQLarge() {
+        for (int i = 0; i < 20000; i++ ) {
+            testNaivePQ.add(i, i);
+        }
     }
 }
 
