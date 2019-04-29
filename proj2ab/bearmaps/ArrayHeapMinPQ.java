@@ -17,6 +17,10 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         n = 0;
     }
 
+    public ArrayHeapMinPQ() {
+        this(1);
+    }
+
     /**
      * Adds an item with the given priority value. Throws an
      * IllegalArgumentExceptionb if item is already present.
