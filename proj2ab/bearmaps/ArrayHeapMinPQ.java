@@ -1,11 +1,13 @@
 package bearmaps;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
 
     private PriorityNode[] pq;             // store items at indices 1 to n
     private int n;                         // number of items on priority queue
+    private ArrayList<PriorityNode> sortedPQ;
 
     /**
      * Initializes an empty priority queue with the given initial capacity.
@@ -15,6 +17,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     public ArrayHeapMinPQ(int initCapacity) {
         pq = new PriorityNode[initCapacity + 1];
         n = 0;
+        sortedPQ = new ArrayList<>();
     }
 
     public ArrayHeapMinPQ() {
@@ -32,8 +35,9 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public void add(T item, double priority) {
         if (contains(item)) throw new IllegalArgumentException("Item is already present.");
+        sortedPQ.add(new PriorityNode(item, priority, n));
         if (n == pq.length - 1) resize (2 * pq.length);
-        pq[++n] = new PriorityNode(item, priority);
+        pq[++n] = new PriorityNode(item, priority, n);
         swim(n);
         assert isMinHeap();
     }
@@ -48,13 +52,18 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         // TODO: Improve efficiency? (Right this is running O(N)... but how can we make O(log N)?
        //PriorityNode temp = new PriorityNode(item, 0);
 
-        // Here n needs to be n+1, if not we don't reach the whole list since we are leaving array[0] empty
-        for (int i = 1; i < n+1; i++)
-        if (item.equals(pq[i].returnItem())) {
-            return true;
-        }
-        return false;
+
+//
+//        if (n == 0) return false;
+//
+//        for (int i = 1; i < n+1; i++)
+//        if (item.equals(pq[i].returnItem())) {
+//            return true;
+//        }
+        return sortedPQ.contains(item);
     }
+
+
 
     /**
      * Returns the minimum item. Throws NoSuchElementException if the PQ is empty.
@@ -188,6 +197,8 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         pq[k] = pq[parent];
         pq[parent] = temp;
     }
+
+
 
     /**
      * Is PQ empty?

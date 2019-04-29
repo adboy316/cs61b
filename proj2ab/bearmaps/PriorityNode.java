@@ -5,13 +5,16 @@ class PriorityNode<T> implements Comparable<PriorityNode> {
     private T item;
     private double priority;
 
-    PriorityNode(T e, double p) {
+
+    PriorityNode(T e, double p, int pos) {
         this.item = e;
         this.priority = p;
+
     }
 
     public T returnItem(){return item;};
     public void setPriority(Double p){priority = p;}
+
 
 
     @Override
