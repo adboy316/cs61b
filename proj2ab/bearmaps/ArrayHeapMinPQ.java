@@ -7,7 +7,9 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
 
     private PriorityNode[] pq;             // store items at indices 1 to n
     private int n;                         // number of items on priority queue
-    ArrayList<PriorityNode> sortedPQ;
+
+    ArrayList<T> items;
+
 
     /**
      * Initializes an empty priority queue with the given initial capacity.
@@ -17,7 +19,8 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
     public ArrayHeapMinPQ(int initCapacity) {
         pq = new PriorityNode[initCapacity + 1];
         n = 0;
-        sortedPQ = new ArrayList<>();
+        items = new ArrayList<>();
+
     }
 
     public ArrayHeapMinPQ() {
@@ -35,12 +38,11 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
     @Override
     public void add(T item, double priority) {
         if (contains(item)) throw new IllegalArgumentException("Item is already present.");
+        items.add(item);
         if (n == pq.length - 1) resize (2 * pq.length);
         pq[++n] = new PriorityNode(item, priority);
         swim(n);
-        assert isMinHeap();
 
-        sortedPQ.add(new PriorityNode(item, priority));
     }
 
     /**
@@ -50,20 +52,19 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public boolean contains(T item) {
-        // TODO: Improve efficiency? (Right this is running O(N)... but how can we make O(log N)?
-        return binarySearch(sortedPQ, item);
+        if (n == 0) return false;
+        return binarySearch(items, item);
     }
 
-    public boolean binarySearch(ArrayList<PriorityNode> pq, T item) {
-
+    public boolean binarySearch( ArrayList<T> items, T item) {
         int start = 0;
         int end = n-1;
         while (start <= end) {
             int mid = (start + end) / 2;
-            if (item.equals(pq.get(mid).returnItem())) {
+            if (item.equals(items.get(mid))) {
                 return true;
             }
-            if (item.compareTo(pq.get(mid).returnItem()) == -1) {
+            if (item.compareTo(items.get(mid)) == -1) {
                 end = mid - 1;
             } else {
                 start = mid + 1;
@@ -95,9 +96,9 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
         sink(1);
         pq[n+1] = null;
         if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length / 2);
-        assert isMinHeap();
+       // assert isMinHeap();
 
-        sortedPQ.remove(smallest);
+        items.remove(smallest);
 
         return smallest;
     }
@@ -131,25 +132,6 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
         throw new NoSuchElementException("PQ does not contain " + item);
     }
 
-
-    /**
-     * Checks if PQ is a MinHeap
-     * */
-    private boolean isMinHeap() {
-        return isMinHeap(1);
-    }
-
-    /**
-     * Checks if specific subtree of PQ is MinHeap
-     * */
-    private boolean isMinHeap(int k) {
-        if (k > n) return true;
-        int left = 2*k;
-        int right = 2*k + 1;
-        if (left  <= n && greater(k, left))  return false;
-        if (right <= n && greater(k, right)) return false;
-        return isMinHeap(left) && isMinHeap(right);
-    }
 
     /**
      * Is I greater than J?

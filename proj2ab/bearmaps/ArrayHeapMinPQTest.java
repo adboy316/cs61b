@@ -11,11 +11,26 @@ public class ArrayHeapMinPQTest {
     ArrayHeapMinPQ<Integer> testPQLarge;
     NaiveMinPQ<Integer> testNaivePQ;
 
+
+    ArrayHeapMinPQ<Integer> testPQLargeLoaded;
+    NaiveMinPQ<Integer> testNaivePQLoaded;
+
     @Before
     public void setUp () {
         testPQ  = new ArrayHeapMinPQ<>(10);
         testPQLarge  = new ArrayHeapMinPQ<>(10);
         testNaivePQ = new NaiveMinPQ<>();
+
+        testPQLargeLoaded  = new ArrayHeapMinPQ<>(10);
+        testNaivePQLoaded = new NaiveMinPQ<>();
+
+        for (int i = 0; i < 20000  ; i++ ) {
+            testPQLargeLoaded.add(i, i);
+        }
+
+        for (int i = 0; i < 20000  ; i++ ) {
+            testNaivePQLoaded.add(i, i);
+        }
 
 
     }
@@ -73,7 +88,7 @@ public class ArrayHeapMinPQTest {
 
     @Test
     public void setTestPQLarge() {
-        for (int i = 0; i < 20000; i++ ) {
+        for (int i = 0; i < 20000  ; i++ ) {
             testPQLarge.add(i, i);
         }
     }
@@ -82,6 +97,21 @@ public class ArrayHeapMinPQTest {
     public void setTestNaivePQLarge() {
         for (int i = 0; i < 20000; i++ ) {
             testNaivePQ.add(i, i);
+        }
+    }
+
+
+    @Test
+    public void testNaivePQLargeContains() {
+        for (int i = 0; i < 20000; i++ ) {
+            testNaivePQLoaded.contains(i);
+        }
+    }
+
+    @Test
+    public void testPQLargeContains() {
+        for (int i = 0; i < 20000; i++ ) {
+            testPQLargeLoaded.contains(i);
         }
     }
 }
