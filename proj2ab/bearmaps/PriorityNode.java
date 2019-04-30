@@ -6,13 +6,19 @@ class PriorityNode<T> implements Comparable<PriorityNode> {
     private double priority;
 
 
-    PriorityNode(T e, double p) {
+    private int position;
+
+
+    PriorityNode(T e, double p, int pos) {
         this.item = e;
         this.priority = p;
 
+        position = pos;
     }
 
     public T returnItem(){return item;};
+    public int getPos(){return position;}
+
     public void setPriority(Double p){priority = p;}
 
 

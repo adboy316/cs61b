@@ -111,4 +111,8 @@ public class NaiveMinPQ<T> implements ExtrinsicMinPQ<T> {
             return item.hashCode();
         }
     }
+
+    T  getItems(int i){
+        return items.get(i).item;
+    }
 }

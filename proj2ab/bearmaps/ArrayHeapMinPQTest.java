@@ -3,6 +3,9 @@ package bearmaps;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.Random;
+
 import static org.junit.Assert.*;
 
 
@@ -23,14 +26,6 @@ public class ArrayHeapMinPQTest {
 
         testPQLargeLoaded  = new ArrayHeapMinPQ<>(10);
         testNaivePQLoaded = new NaiveMinPQ<>();
-
-        for (int i = 0; i < 20000  ; i++ ) {
-            testPQLargeLoaded.add(i, i);
-        }
-
-        for (int i = 0; i < 20000  ; i++ ) {
-            testNaivePQLoaded.add(i, i);
-        }
 
 
     }
@@ -81,14 +76,27 @@ public class ArrayHeapMinPQTest {
     public void testChangePriority() {
         testPQ.add("A", 3.0);
         testPQ.add("B", 2.5);
+        testPQ.add("C", 10.0);
+        testPQ.add("D", 8.5);
+        testPQ.add("E", 9.0);
+        testPQ.add("F", 8.5);
         assertEquals("B", testPQ.getSmallest());
         testPQ.changePriority("A", 2.0);
         assertEquals("A", testPQ.getSmallest());
+        testPQ.changePriority("C", 1.9);
+        assertEquals("C", testPQ.getSmallest());
+        testPQ.changePriority("F", 1.8);
+        assertEquals("F", testPQ.getSmallest());
+        testPQ.changePriority("F", 1.7);
+        assertEquals("F", testPQ.getSmallest());
+        testPQ.removeSmallest();
+        assertEquals("C", testPQ.getSmallest());
+
     }
 
     @Test
     public void setTestPQLarge() {
-        for (int i = 0; i < 20000  ; i++ ) {
+        for (int i = 0; i < 500000  ; i++ ) {
             testPQLarge.add(i, i);
         }
     }
@@ -114,6 +122,34 @@ public class ArrayHeapMinPQTest {
             testPQLargeLoaded.contains(i);
         }
     }
+
+    @Test
+    public void testPQLargeChange() {
+
+        for (int i = 0; i < 500000  ; i++ ) {
+            testPQLargeLoaded.add(i, i);
+        }
+
+        for (Map.Entry<Integer, Integer> key: testPQLargeLoaded.items.entrySet()) {
+            testPQLargeLoaded.changePriority(key.getKey(), new Random().nextInt(21000));
+        }
+
+    }
+
+//    @Test
+//    public void testPQNaiveChange() {
+//
+//        for (int i = 0; i < 500000; i++) {
+//            testNaivePQLoaded.add(i, i);
+//        }
+//
+//        for (int i = 0; i < 500000; i++) { testNaivePQLoaded.changePriority(testNaivePQLoaded.getItems(i), new Random().nextInt(21000));
+//
+//        }
+//
+//    }
+
+
 }
 
 
