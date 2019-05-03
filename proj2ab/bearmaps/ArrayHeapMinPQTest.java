@@ -26,8 +26,6 @@ public class ArrayHeapMinPQTest {
 
         testPQLargeLoaded  = new ArrayHeapMinPQ<>(10);
         testNaivePQLoaded = new NaiveMinPQ<>();
-
-
     }
 
     @Test
@@ -91,12 +89,25 @@ public class ArrayHeapMinPQTest {
         assertEquals("F", testPQ.getSmallest());
         testPQ.removeSmallest();
         assertEquals("C", testPQ.getSmallest());
+        testPQ.add("DE", 100.0);
+        assertEquals("C", testPQ.getSmallest());
+        testPQ.changePriority("DE", 0.5);
+        assertEquals("DE", testPQ.getSmallest());
+    }
 
+    @Test
+    public void setTestChangePriorityPQLarge() {
+        for (int i = 0; i < 500000  ; i++ ) {
+            testPQLarge.add(i, i);
+        }
+        assertEquals((Integer) 0, testPQLarge.getSmallest());
+        testPQLarge.changePriority((Integer) 40000, -0.5);
+        assertEquals((Integer) 40000, testPQLarge.getSmallest());
     }
 
     @Test
     public void setTestPQLarge() {
-        for (int i = 0; i < 500000  ; i++ ) {
+        for (int i = 0; i < 500000 * 3  ; i++ ) {
             testPQLarge.add(i, i);
         }
     }
@@ -108,13 +119,13 @@ public class ArrayHeapMinPQTest {
         }
     }
 
-
     @Test
     public void testNaivePQLargeContains() {
         for (int i = 0; i < 20000; i++ ) {
             testNaivePQLoaded.contains(i);
         }
     }
+
 
     @Test
     public void testPQLargeContains() {
@@ -125,30 +136,14 @@ public class ArrayHeapMinPQTest {
 
     @Test
     public void testPQLargeChange() {
-
         for (int i = 0; i < 500000  ; i++ ) {
             testPQLargeLoaded.add(i, i);
         }
 
-        for (Map.Entry<Integer, Integer> key: testPQLargeLoaded.items.entrySet()) {
+        for (Map.Entry<Integer, Integer> key: testPQLargeLoaded.getItems().entrySet()) {
             testPQLargeLoaded.changePriority(key.getKey(), new Random().nextInt(21000));
         }
-
     }
-
-//    @Test
-//    public void testPQNaiveChange() {
-//
-//        for (int i = 0; i < 500000; i++) {
-//            testNaivePQLoaded.add(i, i);
-//        }
-//
-//        for (int i = 0; i < 500000; i++) { testNaivePQLoaded.changePriority(testNaivePQLoaded.getItems(i), new Random().nextInt(21000));
-//
-//        }
-//
-//    }
-
 
 }
 

@@ -5,7 +5,6 @@ class PriorityNode<T> implements Comparable<PriorityNode> {
     private T item;
     private double priority;
 
-
     private int position;
 
 
@@ -41,6 +40,10 @@ class PriorityNode<T> implements Comparable<PriorityNode> {
 
     @Override
     public int hashCode() {
-        return item.hashCode();
+        int result = Integer.hashCode(position);
+        result = 31 * result + Integer.hashCode((int) priority);
+        result = 31 * result + Integer.hashCode((int) (position + priority));
+        return result;
+
     }
 }

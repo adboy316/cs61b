@@ -1,6 +1,6 @@
+
 package bearmaps;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -8,20 +8,16 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
 
     private PriorityNode[] pq;             // store items at indices 1 to n
     private int n;                         // number of items on priority queue
-
-    HashMap<T, Integer> items;
-
-
+    private HashMap<T, Integer> items;     // item and its place in the pq
     /**
      * Initializes an empty priority queue with the given initial capacity.
      *
      * @param  initCapacity the initial capacity of this priority queue
      */
-    public ArrayHeapMinPQ(int initCapacity) {
+    public ArrayHeapMinPQ(final int initCapacity) {
         pq = new PriorityNode[initCapacity + 1];
         n = 0;
         items = new HashMap<>();
-
     }
 
     public ArrayHeapMinPQ() {
@@ -38,12 +34,15 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public void add(T item, double priority) {
-        if (contains(item)) throw new IllegalArgumentException("Item is already present.");
-        if (n == pq.length - 1) resize (2 * pq.length);
+        if (contains(item)) {
+            throw new IllegalArgumentException("Item is already present.");
+        }
+        if (n == pq.length - 1) {
+            resize (2 * pq.length);
+        }
         pq[++n] = new PriorityNode(item, priority, n);
         items.put(item, n);
         swim(n);
-
     }
 
     /**
@@ -53,29 +52,11 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public boolean contains(T item) {
-        if (n == 0) return false;
+        if (n == 0) {
+            return false;
+        }
         return items.containsKey(item);
     }
-
-    public T binarySearch( ArrayList<T> items, T item) {
-        int start = 0;
-        int end = n-1;
-        while (start <= end) {
-            int mid = (start + end) / 2;
-            if (item.equals(items.get(mid))) {
-                return items.get(mid);
-            }
-            if (item.compareTo(items.get(mid)) == -1) {
-                end = mid - 1;
-            } else {
-                start = mid + 1;
-            }
-        }
-        return null;
-    }
-
-
-
 
     /**
      * Returns the minimum item. Throws NoSuchElementException if the PQ is empty.
@@ -83,7 +64,9 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public T getSmallest() {
-        if (n == 0) throw new NoSuchElementException("The PQ is empty.");
+        if (n == 0) {
+            throw new NoSuchElementException("The PQ is empty.");
+        }
         return (T) pq[1].returnItem();
     }
 
@@ -93,14 +76,16 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public T removeSmallest() {
-        if (n == 0) throw new NoSuchElementException("The PQ is empty.");
+        if (n == 0) {
+            throw new NoSuchElementException("The PQ is empty.");
+        }
         T smallest = (T) pq[1].returnItem();
         swap(1, n--);
         sink(1);
         pq[n+1] = null;
-        if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length / 2);
-       // assert isMinHeap();
-
+        if ((n > 0) && (n == (pq.length - 1) / 4)) {
+            resize(pq.length / 2);
+        }
         items.remove(smallest);
 
         return smallest;
@@ -123,8 +108,6 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        // TODO: May also require optimization...
-
         if (items.containsKey(item)) {
             int itemPos = items.get(item);
             pq[itemPos].setPriority(priority);
@@ -132,19 +115,8 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
             sink(itemPos);
             return;
         }
-
-
-//        for (int i = 1; i < n+1; i++) {
-//            if (item.equals(pq[i].returnItem())) {
-//                pq[i].setPriority(priority);
-//                swim(i);
-//                sink(i);
-//                return;
-//            }
-//        }
         throw new NoSuchElementException("PQ does not contain " + item);
     }
-
 
     /**
      * Is I greater than J?
@@ -206,18 +178,17 @@ public class ArrayHeapMinPQ<T extends Comparable> implements ExtrinsicMinPQ<T> {
         PriorityNode temp = pq[k];
         pq[k] = pq[parent];
         pq[parent] = temp;
-
-
-
     }
-
-
 
     /**
      * Is PQ empty?
      * */
     private boolean isEmpty() {
         return n == 0;
+    }
+
+    HashMap<T, Integer> getItems() {
+        return items;
     }
 
 }
