@@ -10,14 +10,13 @@ import static bearmaps.Point.distance;
  * K-d tree implementation, only has to work for 2-dimensional case.
  * */
 public class KDTree implements PointSet {
-   // private List<Point> points; // I don't think this variable is necessary...?
     private Node root;
-    // X == true, y == false
-    private Boolean lastChecked;
 
-    private Node goodSide;
-    private Node badside;
-    private Double bestDistance;
+    // Orientation of tree, x == true, y == false
+    private Boolean orientation;
+    private Node    goodSide;
+    private Node    badside;
+    private Double  bestDistance;
 
     private class Node {
         private Point p;
@@ -36,9 +35,13 @@ public class KDTree implements PointSet {
         }
     }
 
+
+    /**
+     * Constructs a new KDTree from a List of points;
+     * */
     public KDTree(List<Point> points) {
        // this.points = points;
-        this.lastChecked = true;
+        this.orientation = true;
         for (Point p: points) {
             insert(p);
         }
@@ -51,24 +54,29 @@ public class KDTree implements PointSet {
         if (p == null) {
             throw new IllegalArgumentException("Calls insert() with a null Point.");
         }
-        lastChecked = false;
+        orientation = false;
         root = insert (root, p);
     }
 
-
+    /**
+     * Helper method for insert.
+     * */
     private Node insert(Node x, Point p) {
-        lastChecked = !lastChecked;
+        orientation = !orientation;
         if (x == null) {
             Node returnNode = new Node(p);
-            if (lastChecked) {
+            if (orientation) {
                 returnNode.orientation = "x";
             } else {
                 returnNode.orientation = "y";
             }
             return returnNode;
         }
+        if (x.p.equals(p)){
+            return x;
+        }
         // partition by x
-        if (lastChecked == true) {
+        if (orientation == true) {
             int cmp = xComparator.compare(p.getX(), x.x);
             insert(x, p, cmp);
         }
@@ -80,6 +88,9 @@ public class KDTree implements PointSet {
         return x;
     }
 
+    /**
+     * Another helper method for insert.
+     * */
     private void insert(Node x, Point p, int cmp) {
         if (cmp < 0) x.left = insert(x.left, p);
         else if (cmp > 0) x.right = insert(x.right, p);
@@ -93,16 +104,22 @@ public class KDTree implements PointSet {
     @Override
     public Point nearest(double x, double y) {
         Point goal = new Point(x, y);
-        Point best = root.p;
         return nearest(root, goal, root).p;
     }
 
-
+    /**
+     * Helper method for nearest.
+     * */
     private Node nearest(Node n, Point goal, Node best) {
         if (n == null) {
             return best;
         }
-        if (Math.sqrt(distance(goal, n.p)) < Math.sqrt(distance(best.p, goal)) ) {
+
+        if (bestDistance == null) {
+            bestDistance = Math.sqrt(distance(goal, n.p));
+        }
+
+        if (Math.sqrt(distance(n.p, goal)) < Math.sqrt(distance(best.p, goal)) ) {
             best = n;
             bestDistance = Math.sqrt(distance(goal, n.p));
         }
@@ -112,7 +129,7 @@ public class KDTree implements PointSet {
             findGoodSide(n, cmp);
 
         } else if (n.orientation == "y") {
-            int cmp = xComparator.compare(goal.getX(), n.p.getX());
+            int cmp = xComparator.compare(goal.getY(), n.p.getY());
             findGoodSide(n, cmp);
         }
         best = nearest(goodSide, goal, best);
@@ -124,6 +141,9 @@ public class KDTree implements PointSet {
         return best;
     }
 
+    /**
+     * Finds the good side and bad side of a node.
+     * */
     private void findGoodSide(Node n, int cmp) {
         if (cmp < 0) {
             goodSide = n.left;
