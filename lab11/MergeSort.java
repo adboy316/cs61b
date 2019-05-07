@@ -93,7 +93,7 @@ public class MergeSort {
         Queue<Queue<Item>> qq =  makeSingleItemQueues(items);
 
         if (qq.isEmpty()) {
-            throw new IllegalArgumentException("Trying to sort empty queue.");
+           return items;
         }
 
        while(qq.size() != 1) {
