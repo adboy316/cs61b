@@ -1,16 +1,31 @@
 import edu.princeton.cs.algs4.Queue;
-
 import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
 
 public class TestSortAlgs {
 
     @Test
     public void testQuickSort() {
 
+
+
     }
 
     @Test
     public void testMergeSort() {
+        Queue<String> tas = new Queue<String>();
+        tas.enqueue("Joe");
+        tas.enqueue("Omar");
+        tas.enqueue("Itai");
+
+       tas = MergeSort.mergeSort(tas);
+
+        while (tas.size() > 1) {
+            String first = tas.dequeue();
+            String second = tas.peek();
+            assertTrue(first.compareTo(second) < 0);
+        }
 
     }
 
