@@ -18,6 +18,9 @@ public class TestSortAlgs {
         tas.enqueue("Joe");
         tas.enqueue("Omar");
         tas.enqueue("Itai");
+        tas.enqueue("Gtai");
+        tas.enqueue("Ftai");
+        tas.enqueue("blue");
 
        tas = MergeSort.mergeSort(tas);
 

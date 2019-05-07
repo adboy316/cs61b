@@ -92,6 +92,10 @@ public class MergeSort {
 
         Queue<Queue<Item>> qq =  makeSingleItemQueues(items);
 
+        if (qq.isEmpty()) {
+            return null;
+        }
+
        while(qq.size() != 1) {
            Queue x = qq.dequeue();
            Queue x2 = qq.dequeue();
