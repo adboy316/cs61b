@@ -1,14 +1,30 @@
 import edu.princeton.cs.algs4.Queue;
 import org.junit.Test;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestSortAlgs {
 
     @Test
     public void testQuickSort() {
+        Queue<String> tas = new Queue<String>();
+        tas.enqueue("3");
+        tas.enqueue("6");
+        tas.enqueue("7");
+        tas.enqueue("2");
+        tas.enqueue("1");
+        tas.enqueue("8");
 
+        tas = QuickSort.quickSort(tas);
 
+        assertEquals(6, tas.size());
+
+        while (tas.size() > 1) {
+            String first = tas.dequeue();
+            String second = tas.peek();
+            assertTrue(first.compareTo(second) < 0);
+        }
 
     }
 
@@ -22,7 +38,8 @@ public class TestSortAlgs {
         tas.enqueue("Ftai");
         tas.enqueue("blue");
 
-       tas = MergeSort.mergeSort(tas);
+        tas = MergeSort.mergeSort(tas);
+        assertEquals(6, tas.size());
 
         while (tas.size() > 1) {
             String first = tas.dequeue();

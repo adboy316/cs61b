@@ -62,7 +62,7 @@ public class QuickSort {
                 if (i.compareTo(pivot) > 0) {
                     greater.enqueue(i);
                 }
-                if (i.compareTo(pivot) < 0) {
+                else if (i.compareTo(pivot) < 0) {
                     less.enqueue(i);
                 } else {
                     equal.enqueue(i);
@@ -79,9 +79,7 @@ public class QuickSort {
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
 
-        // TODO: Add a base case
-
-        if (items.isEmpty()){
+        if (items.isEmpty() || items.size() == 1){
             return items;
         }
 
@@ -91,9 +89,6 @@ public class QuickSort {
 
         partition(items, getRandomItem(items), less, equal, greater);
 
-//        quickSort(less);
-//        quickSort(greater);
-
-        return catenate(quickSort(less), quickSort(greater));
+        return catenate(catenate(quickSort(less), equal), quickSort(greater)) ;
     }
 }
