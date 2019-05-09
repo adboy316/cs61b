@@ -38,13 +38,14 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             numStatesExplored += 1;
             solutionWeight += estimate;
 
-            if (runOutOfTime(timeout, sw)) return;
+           // if (runOutOfTime(timeout, sw)) return;
             if (goalReached(end, sw, p)) return;
 
             solution.add(p);
 
             estimate = Double.POSITIVE_INFINITY;;
             relaxEdges(input, end, PQ, p);
+
         }
         solution.clear();
         outcome = SolverOutcome.UNSOLVABLE;
@@ -61,7 +62,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
                 distToQ = distToP + w;
             }
             if (PQ.contains(e.to())) {
-                PQ.changePriority(e.to(), e.weight() + input.estimatedDistanceToGoal(e.to(), end));
+                PQ.changePriority(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
             }
             if (!alreadyVisited.contains(e.to()))
             {
