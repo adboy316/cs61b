@@ -24,11 +24,10 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
         solution = new ArrayList<>();
         alreadyVisited = new ArrayList<>();
-        solutionWeight = 0.0;
+        solutionWeight = 888.888;
         numStatesExplored = 0;
         DoubleMapPQ<Vertex> PQ = new DoubleMapPQ<>();
         PQ.add(start, input.estimatedDistanceToGoal(start, end));
-
 
         while (PQ.size() != 0 ) {
             Vertex p = PQ.removeSmallest();
@@ -68,18 +67,13 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
                 {
                     PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
                     alreadyVisited.add(e.to());
+
                 }
 
-
             }
-
-
-
-
-
-
-
         }
+        solution.clear();
+        outcome = SolverOutcome.UNSOLVABLE;
     }
 
     @Override
@@ -106,4 +100,6 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     public double explorationTime() {
         return timeSpent;
     }
+
+
 }
