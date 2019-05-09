@@ -6,6 +6,7 @@ import bearmaps.hw4.SolverOutcome;
 import bearmaps.hw4.lectureexample.WeightedDirectedGraph;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -41,12 +42,13 @@ public class SanityTests {
         int goal = 6;
         ShortestPathsSolver<Integer> solver = new AStarSolver<>(wdg, start, goal, 10);
         List<Integer> actual = solver.solution();
-        List<Integer> expected = List.of(0, 1, 4, 6);
+        List<Integer> expected = Arrays.asList(0, 1, 4, 6);
         assertEquals(expected, actual);
 
         SolverOutcome actualOutcome = solver.outcome();
         SolverOutcome expectedOutcome = SolverOutcome.SOLVED;
         assertEquals(expectedOutcome, actualOutcome);
+//        assertEquals(10.0, solver.solutionWeight());
     }
 
     @Test
@@ -56,7 +58,7 @@ public class SanityTests {
         int goal = 0;
         ShortestPathsSolver<Integer> solver = new AStarSolver<>(wdg, start, goal, 10);
         List<Integer> actual = solver.solution();
-        List<Integer> expected = List.of(0);
+        List<Integer> expected = Arrays.asList(0);
         assertEquals(expected, actual);
 
         SolverOutcome actualOutcome = solver.outcome();
@@ -71,7 +73,7 @@ public class SanityTests {
         int goal = 0;
         ShortestPathsSolver<Integer> solver = new AStarSolver<>(wdg, start, goal, 10);
         List<Integer> actual = solver.solution();
-        List<Integer> expected = List.of();
+        List<Integer> expected = Arrays.asList();
         assertEquals(expected, actual);
 
         SolverOutcome actualOutcome = solver.outcome();
