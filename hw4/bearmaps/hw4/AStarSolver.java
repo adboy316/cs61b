@@ -12,7 +12,8 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     private double solutionWeight;
     private List<Vertex> solution;
     private double timeSpent;
-    public int numStatesExplored;
+    private int numStatesExplored;
+    private List<Vertex> alreadyVisited;
 
 
 
@@ -22,22 +23,23 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
         Stopwatch sw = new Stopwatch();
 
         solution = new ArrayList<>();
+        alreadyVisited = new ArrayList<>();
         solutionWeight = 0.0;
         numStatesExplored = 0;
         DoubleMapPQ<Vertex> PQ = new DoubleMapPQ<>();
         PQ.add(start, input.estimatedDistanceToGoal(start, end));
 
 
-        while (PQ.size() > 0 ) {
+        while (PQ.size() != 0 ) {
             Vertex p = PQ.removeSmallest();
             numStatesExplored += 1;
 
-            if (sw.elapsedTime() > timeout) {
-                outcome = SolverOutcome.UNSOLVABLE;
-                solution.clear();
-                timeSpent =  sw.elapsedTime();
-                return;
-            }
+//            if (sw.elapsedTime() > timeout) {
+//                outcome = SolverOutcome.UNSOLVABLE;
+//                solution.clear();
+//                timeSpent =  sw.elapsedTime();
+//                return;
+//            }
 
             if (p.equals(end)) {
                 solution.add(p);
@@ -51,12 +53,32 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             // Relax edges
             for (WeightedEdge<Vertex> e : input.neighbors(p)) {
 
-                if (PQ.contains(e.to())) {
-//                    PQ.changePriority(e.to(), e.weight() + input.estimatedDistanceToGoal(e.to(), end));
-                } else {
-                    PQ.add(e.to(), e.weight() + input.estimatedDistanceToGoal(e.to(), end));
+                Double distToP = input.estimatedDistanceToGoal(e.to(), p);
+                Double distToQ = input.estimatedDistanceToGoal(e.to(), e.to());
+                Double w = e.weight();
+
+
+                if (distToP + w < distToQ) {
+                    distToQ = distToP + w;
                 }
+                if (PQ.contains(e.to())) {
+                    PQ.changePriority(e.to(), e.weight() + input.estimatedDistanceToGoal(e.to(), end));
+                }
+                if (!alreadyVisited.contains(e.to()))
+                {
+                    PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
+                    alreadyVisited.add(e.to());
+                }
+
+
             }
+
+
+
+
+
+
+
         }
     }
 
