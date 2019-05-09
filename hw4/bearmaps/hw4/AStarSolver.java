@@ -34,12 +34,12 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             Vertex p = PQ.removeSmallest();
             numStatesExplored += 1;
 
-//            if (sw.elapsedTime() > timeout) {
-//                outcome = SolverOutcome.UNSOLVABLE;
-//                solution.clear();
-//                timeSpent =  sw.elapsedTime();
-//                return;
-//            }
+            if (sw.elapsedTime() > timeout) {
+                outcome = SolverOutcome.UNSOLVABLE;
+                solution.clear();
+                timeSpent =  sw.elapsedTime();
+                return;
+            }
 
             if (p.equals(end)) {
                 solution.add(p);
