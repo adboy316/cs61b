@@ -67,12 +67,14 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             }
             else if (!alreadyVisited.contains(e.to()))
             {
-                PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
-                alreadyVisited.add(e.to());
-
                 if (e.weight() + distToP  < estimate ) {
                     estimate = e.weight();
                 }
+
+                PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
+                alreadyVisited.add(e.to());
+
+
             }
         }
     }
