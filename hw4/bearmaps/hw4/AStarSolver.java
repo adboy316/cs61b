@@ -4,6 +4,7 @@ import bearmaps.proj2ab.DoubleMapPQ;
 import edu.princeton.cs.algs4.Stopwatch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,9 +20,9 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
     private int numStatesExplored;
 
-    private double estimate = 0;
 
     HashMap<Vertex, Double> distTo = new HashMap<>();
+    HashMap<Vertex, Vertex> edgeTo = new HashMap<>();
 
 
 
@@ -42,16 +43,15 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
         while (PQ.size() != 0 ) {
             Vertex p = PQ.removeSmallest();
+            //solution.add(p);
             numStatesExplored += 1;
-            //solutionWeight += estimate;
+            alreadyVisited.add(p);
 
-            if (runOutOfTime(timeout, sw)) return;
-            if (goalReached(end, sw, p)) return;
-
-            solution.add(p);
-
-            //estimate = Double.POSITIVE_INFINITY;
+           // if (runOutOfTime(timeout, sw)) return;
+            if (goalReached(end, start, sw, p)) return;
             relaxEdges(input, end, PQ, p);
+
+
         }
         solution.clear();
         solutionWeight = 0.0;
@@ -63,40 +63,53 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
             if (!distTo.containsKey(e.to())) {
                 distTo.put(e.to(), Double.POSITIVE_INFINITY);
+                edgeTo.put(e.to(), e.from());
+
             }
 
-            Double h = input.estimatedDistanceToGoal(e.to(), end);
             Vertex q = e.to();
-            Vertex p2 = e.from();
+            Double h = input.estimatedDistanceToGoal(q, end);
             Double w = e.weight();
-            Double distToP = distTo.get(p);
-            Double distToQ = distTo.get(q);
 
             if (distTo.get(p)+ w < distTo.get(q)) {
-                //distToQ = distTo.get(p)+ w;
-                distTo.replace(q, distToQ, distTo.get(p)+ w);
+
+                distTo.replace(q, distTo.get(p)+ w);
 
                 if (PQ.contains(q)) {
                     PQ.changePriority(q, distTo.get(p) + h);
-                } else {
+                }
+                if (!PQ.contains(q)) {
                     PQ.add(q, distTo.get(q) + h);
-                    alreadyVisited.add(e.to());
-                    distTo.put(e.to(), e.weight() + distTo.get(e.from()) );
+                    distTo.put(e.to(), e.weight() + distTo.get(e.from()));
                 }
             }
 
         }
     }
 
-    private boolean goalReached(Vertex end, Stopwatch sw, Vertex p) {
+    private boolean goalReached(Vertex end, Vertex start, Stopwatch sw, Vertex p) {
         if (p.equals(end)) {
-            solution.add(p);
+            //solution.add(p);
+            solution = findPath(p, start, edgeTo);
             outcome = SolverOutcome.SOLVED;
             solutionWeight = distTo.get(p);
             timeSpent =  sw.elapsedTime();
             return true;
         }
         return false;
+    }
+
+    private List<Vertex> findPath(Vertex p, Vertex start, HashMap<Vertex, Vertex> edgeTo) {
+
+        if (p.equals(start)) {
+            solution.add(start);
+            Collections.reverse(solution);
+            return solution;
+        }
+
+        solution.add(p);
+        findPath(edgeTo.get(p), start, edgeTo);
+        return solution;
     }
 
     private boolean runOutOfTime(double timeout, Stopwatch sw) {
