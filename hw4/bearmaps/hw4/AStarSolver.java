@@ -4,6 +4,7 @@ import bearmaps.proj2ab.DoubleMapPQ;
 import edu.princeton.cs.algs4.Stopwatch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
@@ -20,6 +21,9 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
     private double estimate = 0;
 
+    HashMap<Vertex, Double> distTo = new HashMap<>();
+
+
 
     public AStarSolver(AStarGraph<Vertex> input, Vertex
             start, Vertex end, double timeout) {
@@ -30,22 +34,24 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
         alreadyVisited = new ArrayList<>();
         solutionWeight = 0.0;
         numStatesExplored = 0;
+
         DoubleMapPQ<Vertex> PQ = new DoubleMapPQ<>();
-        PQ.add(start, input.estimatedDistanceToGoal(start, end));
+        PQ.add(start, 0);
+        distTo.put(start, 0.0);
+
 
         while (PQ.size() != 0 ) {
             Vertex p = PQ.removeSmallest();
             numStatesExplored += 1;
             solutionWeight += estimate;
 
-           // if (runOutOfTime(timeout, sw)) return;
+            if (runOutOfTime(timeout, sw)) return;
             if (goalReached(end, sw, p)) return;
 
             solution.add(p);
 
-            estimate = Double.POSITIVE_INFINITY;
+            //estimate = Double.POSITIVE_INFINITY;
             relaxEdges(input, end, PQ, p);
-
         }
         solution.clear();
         solutionWeight = 0.0;
@@ -55,27 +61,28 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     private void relaxEdges(AStarGraph<Vertex> input, Vertex end, DoubleMapPQ<Vertex> PQ, Vertex p) {
         for (WeightedEdge<Vertex> e : input.neighbors(p)) {
 
-            Double distToP = input.estimatedDistanceToGoal(e.to(), p);
-            Double distToQ = input.estimatedDistanceToGoal(e.to(), e.to());
+            if (!distTo.containsKey(e.to())) {
+                distTo.put(e.to(), Double.POSITIVE_INFINITY);
+            }
+
+            Double h = input.estimatedDistanceToGoal(e.to(), end);
+            Vertex q = e.to();
             Double w = e.weight();
+            Double distToP = e.weight();
+            Double distToQ = distTo.get(q);
 
-            if (distToP + w < distToQ) {
-                distToQ = distToP + w;
-            }
-            if (PQ.contains(e.to())) {
-                PQ.changePriority(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
-            }
-            else if (!alreadyVisited.contains(e.to()))
-            {
-                if (e.weight() + distToP  < estimate ) {
-                    estimate = e.weight();
+            if (distTo.get(p)+ w < distTo.get(q)) {
+                distToQ = distTo.get(p)+ w;
+
+                if (PQ.contains(q)) {
+                    PQ.changePriority(q, distTo.get(p) + h);
+                } else {
+                    PQ.add(e.to(), e.weight() + h);
+                    alreadyVisited.add(e.to());
+                    distTo.put(e.to(), e.weight() + distTo.get(e.from()) );
                 }
-
-                PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
-                alreadyVisited.add(e.to());
-
-
             }
+
         }
     }
 
@@ -83,6 +90,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
         if (p.equals(end)) {
             solution.add(p);
             outcome = SolverOutcome.SOLVED;
+            solutionWeight = distTo.get(p);
             timeSpent =  sw.elapsedTime();
             return true;
         }
@@ -93,6 +101,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
         if (sw.elapsedTime() > timeout) {
             outcome = SolverOutcome.UNSOLVABLE;
             solution.clear();
+            solutionWeight = 0.0;
             timeSpent =  sw.elapsedTime();
             return true;
         }
