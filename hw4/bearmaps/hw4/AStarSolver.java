@@ -9,16 +9,16 @@ import java.util.List;
 public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
     private SolverOutcome outcome;
-    private double solutionWeight;
+
     private List<Vertex> solution;
-    private double timeSpent;
-    private int numStatesExplored;
     private List<Vertex> alreadyVisited;
 
+    private double solutionWeight;
+    private double timeSpent;
 
-    double estimate = 0;
+    private int numStatesExplored;
 
-
+    private double estimate = 0;
 
 
     public AStarSolver(AStarGraph<Vertex> input, Vertex
@@ -43,11 +43,12 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
             solution.add(p);
 
-            estimate = Double.POSITIVE_INFINITY;;
+            estimate = Double.POSITIVE_INFINITY;
             relaxEdges(input, end, PQ, p);
 
         }
         solution.clear();
+        solutionWeight = 0.0;
         outcome = SolverOutcome.UNSOLVABLE;
     }
 
@@ -64,12 +65,12 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             if (PQ.contains(e.to())) {
                 PQ.changePriority(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
             }
-            if (!alreadyVisited.contains(e.to()))
+            else if (!alreadyVisited.contains(e.to()))
             {
                 PQ.add(e.to(), distToQ + input.estimatedDistanceToGoal(e.to(), end));
                 alreadyVisited.add(e.to());
 
-                if (e.weight() + distToP  < estimate) {
+                if (e.weight() + distToP  < estimate ) {
                     estimate = e.weight();
                 }
             }
@@ -121,6 +122,4 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     public double explorationTime() {
         return timeSpent;
     }
-
-
 }
