@@ -43,11 +43,11 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
         while (PQ.size() != 0 ) {
             Vertex p = PQ.removeSmallest();
-            //solution.add(p);
+
             numStatesExplored += 1;
             alreadyVisited.add(p);
 
-           // if (runOutOfTime(timeout, sw)) return;
+            if (runOutOfTime(timeout, sw)) return;
             if (goalReached(end, start, sw, p)) return;
             relaxEdges(input, end, PQ, p);
 
@@ -80,7 +80,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
                 }
                 if (!PQ.contains(q)) {
                     PQ.add(q, distTo.get(q) + h);
-                    distTo.put(e.to(), e.weight() + distTo.get(e.from()));
+                    distTo.put(e.to(), e.weight() + distTo.get(p));
                 }
             }
 
@@ -89,7 +89,6 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
     private boolean goalReached(Vertex end, Vertex start, Stopwatch sw, Vertex p) {
         if (p.equals(end)) {
-            //solution.add(p);
             solution = findPath(p, start, edgeTo);
             outcome = SolverOutcome.SOLVED;
             solutionWeight = distTo.get(p);
