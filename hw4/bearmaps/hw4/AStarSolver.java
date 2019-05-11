@@ -76,6 +76,8 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
                 if (PQ.contains(q)) {
                     PQ.changePriority(q, distTo.get(p) + h);
+                    //todo: is this right?
+                    distTo.put(e.to(), e.weight() + distTo.get(p));
                 }
                 if (!PQ.contains(q)) {
                     PQ.add(q, distTo.get(q) + h);
