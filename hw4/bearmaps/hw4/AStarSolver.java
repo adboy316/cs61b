@@ -33,7 +33,6 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
         solution = new ArrayList<>();
         alreadyVisited = new ArrayList<>();
-        solutionWeight = 0.0;
         numStatesExplored = 0;
 
         DoubleMapPQ<Vertex> PQ = new DoubleMapPQ<>();
