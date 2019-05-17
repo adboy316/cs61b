@@ -12,6 +12,8 @@ import java.util.List;
  * Created by rahul
  */
 public class Constants {
+    public final static double ULLON_d1_x0_y0 =  122.2998046875;
+    public final static double LRLON_d1_x0_y0 =  122.255859375;
 
     /**
      * The root upper left/lower right longitudes and latitudes represent the bounding box of

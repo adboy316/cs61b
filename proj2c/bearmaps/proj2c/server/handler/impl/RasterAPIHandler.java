@@ -1,10 +1,13 @@
 package bearmaps.proj2c.server.handler.impl;
 
+import bearmaps.proj2ab.DoubleMapPQ;
+import bearmaps.proj2ab.Point;
 import bearmaps.proj2c.AugmentedStreetMapGraph;
 import bearmaps.proj2c.server.handler.APIRouteHandler;
+import bearmaps.proj2c.utils.Constants;
+import bearmaps.proj2c.utils.Rectangle;
 import spark.Request;
 import spark.Response;
-import bearmaps.proj2c.utils.Constants;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,13 +15,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static bearmaps.proj2c.utils.Constants.SEMANTIC_STREET_GRAPH;
-import static bearmaps.proj2c.utils.Constants.ROUTE_LIST;
+import static bearmaps.proj2c.utils.Constants.*;
 
 /**
  * Handles requests from the web browser for map images. These images
@@ -26,6 +26,9 @@ import static bearmaps.proj2c.utils.Constants.ROUTE_LIST;
  * @author rahul, Josh Hug, _________
  */
 public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<String, Object>> {
+
+
+
 
     /**
      * Each raster request to the server will have the following parameters
@@ -84,12 +87,128 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      */
     @Override
     public Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
-        //System.out.println("yo, wanna know the parameters given by the web browser? They are:");
-        //System.out.println(requestParams);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented RasterAPIHandler.processRequest, nothing is displayed in "
-                + "your browser.");
+        int depth = 0;
+        String[][] render_grid;
+        Boolean query_success = false;
+
+        // Get all the keys of the request parameters
+        Double ullon =  requestParams.get("ullon");
+        Double lrlon = requestParams.get("lrlon");
+        Double lrlat = requestParams.get("lrlat");
+        Double ullat = requestParams.get("ullat");
+
+        Double w = requestParams.get("w");
+        Double h = requestParams.get("h");
+
+        Double LonDPP = (lrlon - ullon)/w;
+        depth = findDepth(LonDPP);
+
+        HashMap<String, Integer> images = buildImageTree(depth);
+        DoubleMapPQ<String> renderImages =  findIntersectionQuery(images, ullon, lrlon, lrlat, ullat);
+
+        render_grid = buildRenderGrid(renderImages, w, h);
+        query_success = true;
+
+
+        // We will need to maybe add the images to a  quee
+        // We already have a DoubleMap PQ
+        // Then we can place it in an array starting with the smallest
+         // WE can make position priority
+
+        // Not sure why alg is taking so long...
+        // I ran some tests and it seems like the String buffering being used makes things very slow
+        //buildImageTree(depth)  and buildImageTree(depth) both need to be optimized
+
+        Rectangle topLeft = boundingBox(render_grid[0][0]);
+        Rectangle bottomRight = boundingBox(render_grid[render_grid.length-1][render_grid.length-1]);
+
+
+        // Add stuff to the return Map
+        results.put("raster_ul_lon", topLeft.getTopLeft().getX());
+        results.put("depth", depth);
+        results.put("raster_lr_lon", bottomRight.getBottomRight().getX());
+        results.put("raster_lr_lat", bottomRight.getBottomRight().getY());
+        results.put("render_grid", render_grid);
+        results.put("raster_ul_lat", topLeft.getTopLeft().getY());
+        results.put("query_success", query_success);
+
+
+        System.out.println(results);
+
         return results;
+
+    }
+
+    private String[][] buildRenderGrid(DoubleMapPQ<String> renderImages, Double w, Double h) {
+
+        Double naiveSize = Math.sqrt(renderImages.size());
+
+        String[][] results = new String[naiveSize.intValue()][naiveSize.intValue()];
+
+        for (int i = 0; i < results.length; i++) {
+            for (int j = 0; j < results.length; j++) {
+                results[i][j] = renderImages.removeSmallest();
+            }
+        }
+
+        return results;
+    }
+
+    private DoubleMapPQ<String> findIntersectionQuery(HashMap<String, Integer> images, Double ullon,
+                                                           Double lrlon, Double lrlat, Double ullat) {
+        DoubleMapPQ<String> overlappingRectangles = new DoubleMapPQ<>();
+        Rectangle queryBox = new Rectangle(new Point(ullon, ullat), new Point(lrlon, lrlat));
+
+
+
+        images.forEach((key, value) -> {
+            Rectangle imageBox = boundingBox(key);
+            if (imageBox.isOverlapping(queryBox)) {
+                overlappingRectangles.add(key, value);
+            }
+        });
+        return overlappingRectangles;
+    }
+
+
+    /**
+     * Builds a tree of "filenames" of size 4^Depth
+     * @author Ariel Delgado
+     */
+    private HashMap<String, Integer> buildImageTree(int depth) {
+        HashMap<String, Integer> returnTree = new HashMap<>();
+        Double totalImages = Math.pow(depth, 4.0);
+        int position = 0;
+        for (int x = 0; x < Math.sqrt(totalImages); x++) {
+            for (int  y = 0; y <  Math.sqrt(totalImages); y++ ){
+                String fileName = "d" + depth + "_x" + y + "_y" + x + ".png";
+                returnTree.put(fileName, position);
+                position +=1;
+            }
+        }
+        return returnTree;
+    }
+
+    /**
+     * Calculates depth, assume depth is at least 1
+     * @author Ariel Delgado
+     */
+    private int findDepth(Double LonDPP){
+        Double res =  ( ROOT_LRLON - ROOT_ULLON) / TILE_SIZE;
+        int n = 0;
+        Double testRes;
+        while (res/Math.pow(2, n) >= LonDPP) {
+            testRes = res/Math.pow(2, n);
+            if (testRes <= LonDPP) {
+                return n;
+            }
+            if (n == 7) {
+                return 7;
+            }
+            n += 1;
+        }
+        return n;
     }
 
     @Override
@@ -212,5 +331,55 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
             }
         }
         return tileImg;
+    }
+
+    /**
+     * Returns bounding box of image
+     * @author Ariel Delgado
+     */
+     public Rectangle boundingBox(Object image) {
+
+        String s = ((String) image);
+        Scanner in = new Scanner(s).useDelimiter("[^0-9]+");
+        int d = in.nextInt();
+        int x = in.nextInt();
+        int y = in.nextInt();
+
+        Double lonDPP = ((ROOT_LRLON - ROOT_ULLON )/(TILE_SIZE)) / Math.pow(2, d);
+        Double latDPP = ((ROOT_ULLAT - ROOT_LRLAT)/TILE_SIZE) / Math.pow(2, d) ;
+
+         // calculate d
+         Double dx = ((Math.pow(2, d) - 1) * TILE_SIZE  * lonDPP) ;
+         Double dy = ((Math.pow(2, d) - 1) * TILE_SIZE * latDPP) ;
+         Double LRLON = ROOT_LRLON - dx; //Moving by d changes LRLON
+         Double LRLAT = ROOT_LRLAT + dy;
+         Double ULLON = ROOT_ULLON;
+         Double ULLAT = ROOT_ULLAT;
+         // Calculate x
+         Double moveX = (x * 256 * lonDPP);
+         LRLON = LRLON + moveX;
+         ULLON = ULLON + moveX;
+         // Calculate y
+         Double moveY = (y * 256* latDPP);
+         LRLAT = LRLAT - moveY;
+         ULLAT = ULLAT - moveY;
+         // Create Points
+         Point upperLeft = new Point(ULLON, ULLAT);
+         Point bottomRight = new Point(LRLON, LRLAT);
+         return new Rectangle(upperLeft, bottomRight);
+    }
+
+    public static void main(String[] args) {
+
+        RasterAPIHandler test = new RasterAPIHandler();
+
+        Double lonDPPd1 = (0.000171661376953125);
+        Double lonDPPd2 = (0.0000858306884765625);
+
+        System.out.println(test.findDepth( 0.000002682209014892578 ));
+
+        Rectangle testRect = test.boundingBox("d2_x3_y3.png");
+
+
     }
 }
