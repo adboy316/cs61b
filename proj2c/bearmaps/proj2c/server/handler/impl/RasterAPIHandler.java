@@ -88,8 +88,7 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
     public Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
         Map<String, Object> results = new HashMap<>();
         String[][] render_grid;
-        Boolean query_success = false;
-
+        Boolean query_success;
 
         Double LonDPP = calcLonDPP(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"));
         int depth = findDepth(LonDPP);
@@ -109,7 +108,7 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         Rectangle bottomRight = boundingBox(render_grid[render_grid.length - 1]
                 [render_grid[render_grid.length-1].length - 1]);
 
-        // Add stuff to the return Map
+        // Add results to the return Map
         results.put("raster_ul_lon", topLeft.getTopLeft().getX());
         results.put("depth", depth);
         results.put("raster_lr_lon", bottomRight.getBottomRight().getX());
@@ -118,11 +117,8 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         results.put("raster_ul_lat", topLeft.getTopLeft().getY());
         results.put("query_success", query_success);
 
-
         System.out.println(results);
-
         return results;
-
     }
 
     private Double calcLonDPP(Double lrlon, Double ullon, Double w) {
@@ -384,17 +380,4 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         return result;
     }
 
-    public static void main(String[] args) {
-
-        RasterAPIHandler test = new RasterAPIHandler();
-
-        Double lonDPPd1 = (0.000171661376953125);
-        Double lonDPPd2 = (0.0000858306884765625);
-
-        System.out.println(test.findDepth( 0.000002682209014892578 ));
-
-        Rectangle testRect = test.boundingBox("d2_x3_y3.png");
-
-
-    }
 }
