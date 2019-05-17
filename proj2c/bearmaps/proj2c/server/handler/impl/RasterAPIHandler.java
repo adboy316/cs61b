@@ -152,30 +152,16 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         int height = (secondY - firstY) + 1;
 
         String[][] results;
-        if (width >= height) {
-            results = new String[width][height];
 
-            int counter = 0;
-            for (int i = 0; i < results.length; i++) {
-                for (int j = 0; j < results.length; j++) {
-                    results[i][j] = renderImages.get(counter);
-                    counter++;
-                }
+       results = new String[height][width];
+
+        int counter = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                results[i][j] = renderImages.get(counter);
+                counter++;
             }
-
-        } else {
-           results = new String[height][width];
-
-            int counter = 0;
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    results[i][j] = renderImages.get(counter);
-                    counter++;
-                }
-            }
-
         }
-
         return results;
     }
 
@@ -363,11 +349,10 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      */
      public Rectangle boundingBox(Object image) {
 
-        String s = ((String) image);
-        Scanner in = new Scanner(s).useDelimiter("[^0-9]+");
-        int d = in.nextInt();
-        int x = in.nextInt();
-        int y = in.nextInt();
+        List<String> numbers = extractNumbersFromString((String) image); // d = 0, x =1, y =2
+         Double d = Double.parseDouble(numbers.get(0)) ;
+         Double x = Double.parseDouble(numbers.get(1)) ;
+         Double y = Double.parseDouble(numbers.get(2)) ;
 
         Double lonDPP = ((ROOT_LRLON - ROOT_ULLON )/(TILE_SIZE)) / Math.pow(2, d);
         Double latDPP = ((ROOT_ULLAT - ROOT_LRLAT)/TILE_SIZE) / Math.pow(2, d) ;
@@ -391,6 +376,12 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
          Point upperLeft = new Point(ULLON, ULLAT);
          Point bottomRight = new Point(LRLON, LRLAT);
          return new Rectangle(upperLeft, bottomRight);
+    }
+
+    private List<String> extractNumbersFromString(String s) {
+        s = s.replaceAll("[^-?0-9]+", " ");
+        List<String> result = Arrays.asList(s.trim().split(" "));
+        return result;
     }
 
     public static void main(String[] args) {
