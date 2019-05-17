@@ -1,6 +1,5 @@
 package bearmaps.proj2c.server.handler.impl;
 
-import bearmaps.proj2ab.DoubleMapPQ;
 import bearmaps.proj2ab.Point;
 import bearmaps.proj2c.AugmentedStreetMapGraph;
 import bearmaps.proj2c.server.handler.APIRouteHandler;
@@ -104,8 +103,8 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         Double LonDPP = (lrlon - ullon)/w;
         depth = findDepth(LonDPP);
 
-        HashMap<String, Integer> images = buildImageTree(depth);
-        DoubleMapPQ<String> renderImages =  findIntersectionQuery(images, ullon, lrlon, lrlat, ullat);
+        ArrayList<String> images = buildImageTree(depth);
+        ArrayList<String> renderImages =  findIntersectionQuery(images, ullon, lrlon, lrlat, ullat);
 
         render_grid = buildRenderGrid(renderImages, w, h);
         query_success = true;
@@ -121,7 +120,10 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         //buildImageTree(depth)  and buildImageTree(depth) both need to be optimized
 
         Rectangle topLeft = boundingBox(render_grid[0][0]);
-        Rectangle bottomRight = boundingBox(render_grid[render_grid.length-1][render_grid.length-1]);
+
+        Rectangle bottomRight = boundingBox(render_grid[render_grid.length - 1]
+                [render_grid[render_grid.length-1].length - 1]);
+
 
 
         // Add stuff to the return Map
@@ -140,34 +142,68 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
 
     }
 
-    private String[][] buildRenderGrid(DoubleMapPQ<String> renderImages, Double w, Double h) {
+    private String[][] buildRenderGrid(ArrayList<String> renderImages, Double w, Double h) {
 
-        Double naiveSize = Math.sqrt(renderImages.size());
+        String firstImage = renderImages.get(0);
 
-        String[][] results = new String[naiveSize.intValue()][naiveSize.intValue()];
+        Scanner in = new Scanner(firstImage).useDelimiter("[^0-9]+");
+        in.nextInt();
+        int firstX = in.nextInt();
+        int firstY = in.nextInt();
 
-        for (int i = 0; i < results.length; i++) {
-            for (int j = 0; j < results.length; j++) {
-                results[i][j] = renderImages.removeSmallest();
+        String lastImage = renderImages.get(renderImages.size()-1);
+        Scanner in2 = new Scanner(lastImage).useDelimiter("[^0-9]+");
+        in2.nextInt();
+        int secondX = in2.nextInt();
+        int secondY = in2.nextInt();
+
+        int width = (secondX - firstX) + 1;
+        int height = (secondY - firstY) + 1;
+
+        String[][] results;
+        if (width >= height) {
+            results = new String[width][height];
+
+            int counter = 0;
+            for (int i = 0; i < results.length; i++) {
+                for (int j = 0; j < results.length; j++) {
+                    results[i][j] = renderImages.get(counter);
+                    counter++;
+                }
             }
+
+        } else {
+           results = new String[height][width];
+
+            int counter = 0;
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    results[i][j] = renderImages.get(counter);
+                    counter++;
+                }
+            }
+
         }
+
+
+
 
         return results;
     }
 
-    private DoubleMapPQ<String> findIntersectionQuery(HashMap<String, Integer> images, Double ullon,
+    private ArrayList<String> findIntersectionQuery(ArrayList<String> images, Double ullon,
                                                            Double lrlon, Double lrlat, Double ullat) {
-        DoubleMapPQ<String> overlappingRectangles = new DoubleMapPQ<>();
+        ArrayList<String> overlappingRectangles = new ArrayList<>();
         Rectangle queryBox = new Rectangle(new Point(ullon, ullat), new Point(lrlon, lrlat));
 
-
-
-        images.forEach((key, value) -> {
-            Rectangle imageBox = boundingBox(key);
+        for (String s: images) {
+            Rectangle imageBox = boundingBox(s);
             if (imageBox.isOverlapping(queryBox)) {
-                overlappingRectangles.add(key, value);
+                overlappingRectangles.add(s);
             }
-        });
+        }
+
+
         return overlappingRectangles;
     }
 
@@ -176,14 +212,14 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
      * Builds a tree of "filenames" of size 4^Depth
      * @author Ariel Delgado
      */
-    private HashMap<String, Integer> buildImageTree(int depth) {
-        HashMap<String, Integer> returnTree = new HashMap<>();
+    private ArrayList<String> buildImageTree(int depth) {
+        ArrayList<String> returnTree = new ArrayList<>();
         Double totalImages = Math.pow(depth, 4.0);
         int position = 0;
         for (int x = 0; x < Math.sqrt(totalImages); x++) {
             for (int  y = 0; y <  Math.sqrt(totalImages); y++ ){
                 String fileName = "d" + depth + "_x" + y + "_y" + x + ".png";
-                returnTree.put(fileName, position);
+                returnTree.add(fileName);
                 position +=1;
             }
         }
