@@ -87,44 +87,27 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
     @Override
     public Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
         Map<String, Object> results = new HashMap<>();
-        int depth = 0;
         String[][] render_grid;
         Boolean query_success = false;
 
-        // Get all the keys of the request parameters
-        Double ullon =  requestParams.get("ullon");
-        Double lrlon = requestParams.get("lrlon");
-        Double lrlat = requestParams.get("lrlat");
-        Double ullat = requestParams.get("ullat");
 
-        Double w = requestParams.get("w");
-        Double h = requestParams.get("h");
-
-        Double LonDPP = (lrlon - ullon)/w;
-        depth = findDepth(LonDPP);
+        Double LonDPP = calcLonDPP(requestParams.get("lrlon"), requestParams.get("ullon"), requestParams.get("w"));
+        int depth = findDepth(LonDPP);
 
         ArrayList<String> images = buildImageTree(depth);
-        ArrayList<String> renderImages =  findIntersectionQuery(images, ullon, lrlon, lrlat, ullat);
+        ArrayList<String> renderImages =  findIntersectionQuery(images, requestParams.get("ullon"),
+                requestParams.get("lrlon"), requestParams.get("lrlat"), requestParams.get("ullat"));
 
-        render_grid = buildRenderGrid(renderImages, w, h);
+        render_grid = buildRenderGrid(renderImages, requestParams.get("w"), requestParams.get("h"));
+
+        if (render_grid == null) {
+           return queryFail();
+        }
+
         query_success = true;
-
-
-        // We will need to maybe add the images to a  quee
-        // We already have a DoubleMap PQ
-        // Then we can place it in an array starting with the smallest
-         // WE can make position priority
-
-        // Not sure why alg is taking so long...
-        // I ran some tests and it seems like the String buffering being used makes things very slow
-        //buildImageTree(depth)  and buildImageTree(depth) both need to be optimized
-
         Rectangle topLeft = boundingBox(render_grid[0][0]);
-
         Rectangle bottomRight = boundingBox(render_grid[render_grid.length - 1]
                 [render_grid[render_grid.length-1].length - 1]);
-
-
 
         // Add stuff to the return Map
         results.put("raster_ul_lon", topLeft.getTopLeft().getX());
@@ -142,7 +125,15 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
 
     }
 
+    private Double calcLonDPP(Double lrlon, Double ullon, Double w) {
+       return (lrlon - ullon)/w;
+    }
+
     private String[][] buildRenderGrid(ArrayList<String> renderImages, Double w, Double h) {
+
+        if (renderImages.isEmpty()){
+            return null;
+        }
 
         String firstImage = renderImages.get(0);
 
@@ -185,9 +176,6 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
 
         }
 
-
-
-
         return results;
     }
 
@@ -198,23 +186,23 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
 
         for (String s: images) {
             Rectangle imageBox = boundingBox(s);
-            if (imageBox.isOverlapping(queryBox)) {
+            if (queryBox.isOverlapping(imageBox)) {
                 overlappingRectangles.add(s);
             }
         }
-
 
         return overlappingRectangles;
     }
 
 
     /**
-     * Builds a tree of "filenames" of size 4^Depth
+     * Builds a tree of "filenames" of size 4^Depth. Assumes 7 is the max depth.
      * @author Ariel Delgado
      */
     private ArrayList<String> buildImageTree(int depth) {
+
         ArrayList<String> returnTree = new ArrayList<>();
-        Double totalImages = Math.pow(depth, 4.0);
+        Double totalImages = Math.pow(4, depth);
         int position = 0;
         for (int x = 0; x < Math.sqrt(totalImages); x++) {
             for (int  y = 0; y <  Math.sqrt(totalImages); y++ ){
